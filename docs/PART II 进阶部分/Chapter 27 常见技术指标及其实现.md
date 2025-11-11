@@ -305,7 +305,7 @@ Fibonacci回调和扩展水平可以帮助交易者识别可能的支撑和阻�
 
 ### 27.9： Ichimoku云
 
-![img_1.png](/home/arthur/Documents/Cookbook-for-Rustaceans-in-Finance/img_1.png)
+![img_1.png](../images/img_1.png)
 Ichimoku云，也称为**一目均衡图**，是一种综合性的技术分析工具，最初由日本分析师兼记者一目山人（Goichi Hosoda）在20世纪20年代开发。该工具旨在提供有关资产价格趋势、支撑和阻力水平以及未来价格走势的综合信息。Ichimoku云由多个组成部分组成，以下是对每个组成部分的详细解释：
 
 **1. 转换线（転換線 Tenkan-sen）：** 转换线是计算Ichimoku云的第一个组成部分，通常表示为红色线。它是最近9个交易日的最高价和最低价的平均值。转换线用于提供近期价格走势的参考。

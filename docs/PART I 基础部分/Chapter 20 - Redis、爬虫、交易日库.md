@@ -39,7 +39,7 @@ sudo pacman -S redis
 
 除了传统的CLI以外，Redis还提供了图形化前端 [RedisInsight](https://redis.com/redis-enterprise/redis-insight/) 方便直观查看：
 
-![img.png](/home/arthur/Documents/Cookbook-for-Rustaceans-in-Finance/img.png)
+![img.png](../images/img.png)
 
 下面在20.3小节我们会演示如何为通过Rust和Redis的Rust客户端来插入图示的这对键值对。
 
