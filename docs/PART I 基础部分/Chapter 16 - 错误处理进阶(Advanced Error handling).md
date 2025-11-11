@@ -178,7 +178,8 @@ fn foo() -> Result<()> {
 #![allow(dead_code)]
 
 // 寿司的食材
-#[derive(Debug)] enum SushiIngredient { Rice, Fish, Seaweed, SoySauce, Wasabi }
+#[derive(Debug)]
+enum SushiIngredient { Rice, Fish, Seaweed, SoySauce, Wasabi }
 
 // 寿司制作步骤
 struct WashedRice(SushiIngredient);
