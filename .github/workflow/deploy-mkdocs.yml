@@ -3,7 +3,10 @@ name:  Cookbook for Rustaceans in Finance / Rust量化金融开发指南
 on:
   push:
     branches:
-      - website  # 或者指定你希望触发部署的分支
+      - website
+  pull_request:
+    branches:
+      - website
 
 jobs:
   build-deploy:
@@ -27,5 +30,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
