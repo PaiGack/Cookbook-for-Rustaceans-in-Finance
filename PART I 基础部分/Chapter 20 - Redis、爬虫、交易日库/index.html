@@ -1,0 +1,2121 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../Chapter%2019%20-%20%E6%97%B6%E9%97%B4%E5%A4%84%E7%90%86/">
+      
+      
+        <link rel="next" href="../Chapter%2021%20-%20%E7%BA%BF%E7%A8%8B%E5%92%8C%E7%AE%A1%E9%81%93/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>Chapter 20 - Redis、爬虫、交易日库 - Rust量化金融开发指南</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-20-redis" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Rust量化金融开发指南" class="md-header__button md-logo" aria-label="Rust量化金融开发指南" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Rust量化金融开发指南
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 20 - Redis、爬虫、交易日库
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5M7 15a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/arthur19q3/Cookbook-for-Rustaceans-in-Finance" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    arthur19q3/Cookbook-for-Rustaceans-in-Finance
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Cookbook for Rustaceans in Finance / Rust量化金融开发指南
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../Chapter%2001%20-%20Rust%20%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  PART I 基础部分
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2023%20%E7%94%A8Polars%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8A%A0%E9%80%9F%E6%95%B0%E6%8D%AE%E6%A1%86%E6%9E%B6%E5%A4%84%E7%90%86/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  PART II 进阶部分
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Rust量化金融开发指南" class="md-nav__button md-logo" aria-label="Rust量化金融开发指南" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Rust量化金融开发指南
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/arthur19q3/Cookbook-for-Rustaceans-in-Finance" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    arthur19q3/Cookbook-for-Rustaceans-in-Finance
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cookbook for Rustaceans in Finance / Rust量化金融开发指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    PART I 基础部分
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            PART I 基础部分
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2001%20-%20Rust%20%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 01 - Rust 语言入门
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2002%20-%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 02 - 格式化输出
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2003%20-%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 03 - 原生类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2004%20-%20%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 04 - 自定义类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2005%20-%20%E6%A0%87%E5%87%86%E5%BA%93%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 05 - 标准库类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2006%20-%20%E5%8F%98%E9%87%8F%E5%92%8C%E4%BD%9C%E7%94%A8%E5%9F%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 06   变量和作用域
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2007%20-%20%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 7 - 类型系统
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2008%20-%20%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 8 - 类型转换
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2009%20-%20%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 9 - 流程控制
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2010%20-%20%E5%87%BD%E6%95%B0%2C%20%E6%96%B9%E6%B3%95%20%E5%92%8C%20%E9%97%AD%E5%8C%85/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 10 - 函数, 方法 和 闭包
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2011%20-%20%E6%A8%A1%E5%9D%97/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 11 - 模块
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2012%20-%20Cargo%20%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 12 - Cargo 的进阶使用
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2013%20-%20%E5%B1%9E%E6%80%A7%28Attributes%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 13 - 属性(Attributes)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2014%20-%20%E6%B3%9B%E5%9E%8B%E8%BF%9B%E9%98%B6%28Advanced%20Generic%20Type%20Usage%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 14 - 泛型进阶(Advanced Generic Type Usage)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2015%20-%20%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%A7%84%E5%88%99%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 15 - 作用域规则和生命周期
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2016%20-%20%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E8%BF%9B%E9%98%B6%28Advanced%20Error%20handling%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 16 - 错误处理进阶(Advanced Error handling)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2017%20-%20%E7%89%B9%E6%80%A7%20%28trait%29%20%E8%AF%A6%E8%A7%A3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 17 - 特性 (trait) 详解
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2018%20-%20%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 18 - 创建自定义宏
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2019%20-%20%E6%97%B6%E9%97%B4%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 19 - 时间处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Chapter 20 - Redis、爬虫、交易日库
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 20 - Redis、爬虫、交易日库
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#201-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.1 Redis入门、安装和配置
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20.1 Redis入门、安装和配置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntudebian" class="md-nav__link">
+    <span class="md-ellipsis">
+      在Ubuntu/Debian上安装
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manjaroarchlinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      在Manjaro/Archlinux上安装
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      用户界面
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#202-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.2 常见Redis数据结构类型
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20.2 常见Redis数据结构类型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      字符串（Strings）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hashes" class="md-nav__link">
+    <span class="md-ellipsis">
+      哈希表（Hashes）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lists" class="md-nav__link">
+    <span class="md-ellipsis">
+      列表（Lists）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      集合（Sets）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sorted-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      有序集合（Sorted Sets）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#203-rustredis" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.3 在Rust中使用Redis客户端
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#204" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4 爬虫
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20.4 爬虫">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2041" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4.1 爬虫的基本原理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2042-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4.2. Rust 用于爬虫的优势
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2043-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4.3. Rust 中用于爬虫的库和工具
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2044" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4.4. 爬虫的伦理和法律考虑
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      补充学习：序列化和反序列化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例：在Redis中构建中国大陆交易日库
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2021%20-%20%E7%BA%BF%E7%A8%8B%E5%92%8C%E7%AE%A1%E9%81%93/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 21 - 线程和管道
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2022%20-%20%20%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 22 - 文件处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    PART II 进阶部分
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            PART II 进阶部分
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2023%20%E7%94%A8Polars%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8A%A0%E9%80%9F%E6%95%B0%E6%8D%AE%E6%A1%86%E6%9E%B6%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 23 用Polars实现并加速数据框架处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2024%20-%20%E6%97%B6%E5%BA%8F%E6%95%B0%E6%8D%AE%E5%BA%93Clickhouse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 24 - 时序数据库Clickhouse
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2025%20-%20Unsafe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 25 - Unsafe
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2026%20-%20%E6%96%87%E6%A1%A3%E5%92%8C%E6%B5%8B%E8%AF%95/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 26 - 文档和测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2027%20%E5%B8%B8%E8%A7%81%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 27 常见技术指标及其实现
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#201-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.1 Redis入门、安装和配置
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20.1 Redis入门、安装和配置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntudebian" class="md-nav__link">
+    <span class="md-ellipsis">
+      在Ubuntu/Debian上安装
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manjaroarchlinux" class="md-nav__link">
+    <span class="md-ellipsis">
+      在Manjaro/Archlinux上安装
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      用户界面
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#202-redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.2 常见Redis数据结构类型
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20.2 常见Redis数据结构类型">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#strings" class="md-nav__link">
+    <span class="md-ellipsis">
+      字符串（Strings）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hashes" class="md-nav__link">
+    <span class="md-ellipsis">
+      哈希表（Hashes）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lists" class="md-nav__link">
+    <span class="md-ellipsis">
+      列表（Lists）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      集合（Sets）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sorted-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      有序集合（Sorted Sets）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#203-rustredis" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.3 在Rust中使用Redis客户端
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#204" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4 爬虫
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20.4 爬虫">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2041" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4.1 爬虫的基本原理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2042-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4.2. Rust 用于爬虫的优势
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2043-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4.3. Rust 中用于爬虫的库和工具
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2044" class="md-nav__link">
+    <span class="md-ellipsis">
+      20.4.4. 爬虫的伦理和法律考虑
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      补充学习：序列化和反序列化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redis" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例：在Redis中构建中国大陆交易日库
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="chapter-20-redis">Chapter 20 - Redis、爬虫、交易日库<a class="headerlink" href="#chapter-20-redis" title="Permanent link">&para;</a></h1>
+<h2 id="201-redis">20.1 Redis入门、安装和配置<a class="headerlink" href="#201-redis" title="Permanent link">&para;</a></h2>
+<p>Redis是一个开源的内存内(In-Memory)数据库，它可以用于存储和管理数据，通常用作缓存、消息队列、会话存储等用途。Redis支持多种数据结构，包括字符串、列表、集合、有序集合和哈希表。它以其高性能、低延迟和持久性存储特性而闻名，适用于许多应用场景。</p>
+<p>大多数主流的Linux发行版都提供了Redis的软件包。</p>
+<h4 id="ubuntudebian">在Ubuntu/Debian上安装<a class="headerlink" href="#ubuntudebian" title="Permanent link">&para;</a></h4>
+<p>你可以从官方的<code>packages.redis.io</code> APT存储库安装最新的稳定版本的Redis。</p>
+<p>先决条件</p>
+<p>如果你正在运行一个非常精简的发行版（比如Docker容器），你可能需要首先安装<code>lsb-release</code>、<code>curl</code>和<code>gpg</code>。</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>lsb-release<span class="w"> </span>curl<span class="w"> </span>gpg
+</span></code></pre></div>
+<p>将该存储库添加到<code>apt</code>索引中，然后更新索引，最后进行安装：</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://packages.redis.io/gpg<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>gpg<span class="w"> </span>--dearmor<span class="w"> </span>-o<span class="w"> </span>/usr/share/keyrings/redis-archive-keyring.gpg
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] https://packages.redis.io/deb </span><span class="k">$(</span>lsb_release<span class="w"> </span>-cs<span class="k">)</span><span class="s2"> main&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/redis.list
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>redis
+</span></code></pre></div>
+<h4 id="manjaroarchlinux">在Manjaro/Archlinux上安装<a class="headerlink" href="#manjaroarchlinux" title="Permanent link">&para;</a></h4>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sudo<span class="w"> </span>pacman<span class="w"> </span>-S<span class="w"> </span>redis
+</span></code></pre></div>
+<h4 id="_1">用户界面<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<p>除了传统的CLI以外，Redis还提供了图形化前端 <a href="https://redis.com/redis-enterprise/redis-insight/">RedisInsight</a> 方便直观查看：</p>
+<p><img alt="img.png" src="../../images/img.png" /></p>
+<p>下面在20.3小节我们会演示如何为通过Rust和Redis的Rust客户端来插入图示的这对键值对。</p>
+<h2 id="202-redis">20.2 常见Redis数据结构类型<a class="headerlink" href="#202-redis" title="Permanent link">&para;</a></h2>
+<p>为了将Redis的不同数据结构类型与相应的命令详细叙述并创建一个示例表格，我将按照以下格式为你展示：</p>
+<p><strong>数据结构类型</strong>：描述该数据结构类型的特点和用途。</p>
+<p><strong>常用命令示例</strong>：列出该数据结构类型的一些常用命令示例，包括命令和用途。</p>
+<p><strong>示例表格</strong>：创建一个示例表格，包含数据结构类型、命令示例以及示例值。</p>
+<p>现在让我们开始：</p>
+<h4 id="strings">字符串（Strings）<a class="headerlink" href="#strings" title="Permanent link">&para;</a></h4>
+<p><strong>数据结构类型</strong>：
+字符串是Redis中最简单的数据结构，可以存储文本、二进制数据等。</p>
+<p><strong>常用命令示例</strong>：</p>
+<ul>
+<li>设置字符串值：<code>SET key value</code></li>
+<li>获取字符串值：<code>GET key</code></li>
+</ul>
+<p><strong>示例表格</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>数据结构类型</th>
+<th>命令示例</th>
+<th>示例值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字符串</td>
+<td><code>SET username "Alice"</code></td>
+<td>Key: username, Value: "Alice"</td>
+</tr>
+<tr>
+<td>字符串</td>
+<td><code>GET username</code></td>
+<td>返回值: "Alice"</td>
+</tr>
+</tbody>
+</table>
+<h4 id="hashes">哈希表（Hashes）<a class="headerlink" href="#hashes" title="Permanent link">&para;</a></h4>
+<p><strong>数据结构类型</strong>：
+哈希表是一个键值对的集合，适用于存储多个字段和对应的值。</p>
+<p><strong>常用命令示例</strong>：</p>
+<ul>
+<li>设置哈希表字段：<code>HSET key field value</code></li>
+<li>获取哈希表字段值：<code>HGET key field</code></li>
+</ul>
+<p><strong>示例表格</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>数据结构类型</th>
+<th>命令示例</th>
+<th>示例值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>哈希表</td>
+<td><code>HSET user:id name "Bob"</code></td>
+<td>Key: user:id, Field: name, Value: "Bob"</td>
+</tr>
+<tr>
+<td>哈希表</td>
+<td><code>HGET user:id name</code></td>
+<td>返回值: "Bob"</td>
+</tr>
+</tbody>
+</table>
+<h4 id="lists">列表（Lists）<a class="headerlink" href="#lists" title="Permanent link">&para;</a></h4>
+<p><strong>数据结构类型</strong>：
+列表是一个有序的字符串元素集合，可用于实现队列或栈。</p>
+<p><strong>常用命令示例</strong>：</p>
+<ul>
+<li>从列表左侧插入元素：<code>LPUSH key value1 value2 ...</code></li>
+<li>获取列表范围内的元素：<code>LRANGE key start stop</code></li>
+</ul>
+<p><strong>示例表格</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>数据结构类型</th>
+<th>命令示例</th>
+<th>示例值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>列表</td>
+<td><code>LPUSH queue "item1"</code></td>
+<td>Key: queue, Values: "item1"</td>
+</tr>
+<tr>
+<td>列表</td>
+<td><code>LRANGE queue 0 -1</code></td>
+<td>返回值: ["item1"]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sets">集合（Sets）<a class="headerlink" href="#sets" title="Permanent link">&para;</a></h4>
+<p><strong>数据结构类型</strong>：
+集合是一个无序的字符串元素集合，可用于存储唯一值。</p>
+<p><strong>常用命令示例</strong>：</p>
+<ul>
+<li>添加元素到集合：<code>SADD key member1 member2 ...</code></li>
+<li>获取集合中的所有元素：<code>SMEMBERS key</code></li>
+</ul>
+<p><strong>示例表格</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>数据结构类型</th>
+<th>命令示例</th>
+<th>示例值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>集合</td>
+<td><code>SADD employees "Alice" "Bob"</code></td>
+<td>Key: employees, Members: ["Alice", "Bob"]</td>
+</tr>
+<tr>
+<td>集合</td>
+<td><code>SMEMBERS employees</code></td>
+<td>返回值: ["Alice", "Bob"]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="sorted-sets">有序集合（Sorted Sets）<a class="headerlink" href="#sorted-sets" title="Permanent link">&para;</a></h4>
+<p><strong>数据结构类型</strong>：
+有序集合类似于集合，但每个元素都关联一个分数，用于排序元素。</p>
+<p><strong>常用命令示例</strong>：</p>
+<ul>
+<li>添加元素到有序集合：<code>ZADD key score1 member1 score2 member2 ...</code></li>
+<li>获取有序集合范围内的元素：<code>ZRANGE key start stop</code></li>
+</ul>
+<p><strong>示例表格</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>数据结构类型</th>
+<th>命令示例</th>
+<th>示例值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>有序集合</td>
+<td><code>ZADD leaderboard 100 "Alice"</code></td>
+<td>Key: leaderboard, Score: 100, Member: "Alice"</td>
+</tr>
+<tr>
+<td>有序集合</td>
+<td><code>ZRANGE leaderboard 0 -1</code></td>
+<td>返回值: ["Alice"]</td>
+</tr>
+</tbody>
+</table>
+<p>这些示例展示了不同类型的Redis数据结构以及常用的命令示例，你可以根据你的具体需求和应用场景使用适当的数据结构和命令来构建你的Redis数据库。在20.3的例子中，我们会用一个最简单的字符串例子来做示范。</p>
+<h2 id="203-rustredis">20.3 在Rust中使用Redis客户端<a class="headerlink" href="#203-rustredis" title="Permanent link">&para;</a></h2>
+<p>将Redis与Rust结合使用可以提供高性能和安全的数据存储和处理能力。下面详细说明如何将Redis与Rust配合使用：</p>
+<ol>
+<li>安装Redis客户端库：
+   首先，你需要在Rust项目中引入Redis客户端库，最常用的库是<code>redis-rs</code>，可以在Cargo.toml文件中添加以下依赖项：</li>
+</ol>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">[dependencies]</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">redis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.23&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">tokio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;1.29.1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;full&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<p>然后运行<code>cargo build</code>以安装库。</p>
+<ol>
+<li>创建Redis连接
+   使用Redis客户端库连接到Redis服务器。以下是一个示例：</li>
+</ol>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">use</span><span class="w"> </span><span class="n">redis</span><span class="p">::</span><span class="n">Commands</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cp">#[tokio::main]</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">redis</span><span class="p">::</span><span class="n">RedisResult</span><span class="o">&lt;</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">redis_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;redis://:@127.0.0.1:6379/0&quot;</span><span class="p">;</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redis</span><span class="p">::</span><span class="n">Client</span><span class="p">::</span><span class="n">open</span><span class="p">(</span><span class="n">redis_url</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get_connection</span><span class="p">()</span><span class="o">?</span><span class="p">;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="c1">// 执行Redis命令</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">_</span><span class="p">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">con</span><span class="p">.</span><span class="n">set</span><span class="p">(</span><span class="s">&quot;my_key&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;my_value&quot;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">con</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;my_key&quot;</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Got value: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>这个示例首先创建了一个Redis客户端，然后与服务器建立连接，并执行了一些基本的操作。</p>
+<p><strong>详细解释一下Redis链接的构成：</strong></p>
+<ol>
+<li>
+<p><code>redis://</code>：这部分指示了使用的协议，通常是 <code>redis://</code> 或 <code>rediss://</code>（如果你使用了加密连接）。</p>
+</li>
+<li>
+<p><code>:@</code>：这部分表示用户名和密码，但在你的示例中是空白的，因此没有提供用户名和密码。如果需要密码验证，你可以在 <code>:</code> 后面提供密码，例如：<code>redis://password@127.0.0.1:6379/0</code>。</p>
+</li>
+<li>
+<p><code>127.0.0.1</code>：这部分是 Redis 服务器的主机地址，指定了 Redis 服务器所在的机器的 IP 地址或主机名。在示例中，这是本地主机的 IP 地址，也就是 <code>127.0.0.1</code>，表示连接到本地的 Redis 服务器。</p>
+</li>
+<li>
+<p><code>6379</code>：这部分是 Redis 服务器的端口号，指定了连接到 Redis 服务器的端口。默认情况下，Redis 使用 <code>6379</code> 端口。</p>
+</li>
+<li>
+<p><code>/0</code>：这部分是 Redis 数据库的索引，Redis 支持多个数据库，默认情况下有 16 个数据库，索引从 <code>0</code> 到 <code>15</code>。在示例中，索引为 <code>0</code>，表示连接到数据库索引为 0 的数据库。</p>
+</li>
+</ol>
+<p>综合起来，你的示例 Redis 连接字符串表示连接到本地 Redis 服务器（<code>127.0.0.1</code>）的默认端口（<code>6379</code>），并选择索引为 0 的数据库，没有提供用户名和密码进行认证。如果你的 Redis 服务器有密码保护，你需要提供相应的密码来进行连接。</p>
+<ol>
+<li>
+<p>处理错误：
+   在Rust中，处理错误非常重要，因此需要考虑如何处理Redis操作可能出现的错误。在上面的示例中，我们使用了RedisResult来包裹返回结果，然后用<code>?</code>来处理Redis操作可能引发的错误。你可以根据你的应用程序需求来处理这些错误，例如，记录日志或采取其他适当的措施。</p>
+</li>
+<li>
+<p>使用异步编程：
+   如果你需要处理大量的并发操作或需要高性能，可以考虑使用Rust的异步编程库，如Tokio，与异步Redis客户端库配合使用。这将允许你以非阻塞的方式执行Redis操作，以提高性能。</p>
+</li>
+<li>
+<p>定期清理过期数据：
+   Redis支持过期时间设置，你可以在将数据存储到Redis中时为其设置过期时间。在Rust中，你可以编写定期任务来清理过期数据，以确保Redis中的数据不会无限增长。</p>
+</li>
+</ol>
+<p>总之，将Redis与Rust配合使用可以为你提供高性能、安全的数据存储和处理解决方案。通过使用Rust的强类型和内存安全性，以及Redis的速度和功能，你可以构建可靠的应用程序。当然，在实际应用中，还需要考虑更多复杂的细节，如连接池管理、性能优化和错误处理策略，以确保应用程序的稳定性和性能。</p>
+<h2 id="204">20.4 爬虫<a class="headerlink" href="#204" title="Permanent link">&para;</a></h2>
+<p>Rust 是一种图灵完备的系统级编程语言，当然也可以用于编写网络爬虫。Rust 具有出色的性能、内存安全性和并发性，这些特性使其成为编写高效且可靠的爬虫的理想选择。以下是 Rust 爬虫的简要介绍：</p>
+<h3 id="2041">20.4.1 爬虫的基本原理<a class="headerlink" href="#2041" title="Permanent link">&para;</a></h3>
+<p>爬虫是一个自动化程序，用于从互联网上的网页中提取数据。爬虫的基本工作流程通常包括以下步骤：</p>
+<ol>
+<li>
+<p>发送 HTTP 请求：爬虫会向目标网站发送 HTTP 请求，以获取网页的内容。</p>
+</li>
+<li>
+<p>解析 HTML：爬虫会解析 HTML 文档，从中提取有用的信息，如链接、文本内容等。</p>
+</li>
+<li>
+<p>存储数据：爬虫将提取的数据存储在本地数据库、文件或内存中，以供后续分析和使用。</p>
+</li>
+<li>
+<p>遍历链接：爬虫可能会从当前页面中提取链接，并递归地访问这些链接，以获取更多的数据。</p>
+</li>
+</ol>
+<h3 id="2042-rust">20.4.2. Rust 用于爬虫的优势<a class="headerlink" href="#2042-rust" title="Permanent link">&para;</a></h3>
+<p>Rust 在编写爬虫时具有以下优势：</p>
+<ul>
+<li>
+<p><strong>内存安全性</strong>：Rust 的借用检查器和所有权系统可以防止常见的内存错误，如空指针和数据竞争。这有助于减少爬虫程序中的错误和漏洞。</p>
+</li>
+<li>
+<p><strong>并发性</strong>：Rust 内置了并发性支持，可以轻松地创建多线程和异步任务，从而提高爬虫的效率。</p>
+</li>
+<li>
+<p><strong>性能</strong>：Rust 的性能非常出色，可以快速地下载和处理大量数据。</p>
+</li>
+<li>
+<p><strong>生态系统</strong>：Rust 生态系统中有丰富的库和工具，可用于处理 HTTP 请求、HTML 解析、数据库访问等任务。</p>
+</li>
+<li>
+<p><strong>跨平台</strong>：Rust 可以编写跨平台的爬虫，运行在不同的操作系统上。</p>
+</li>
+</ul>
+<h3 id="2043-rust">20.4.3. Rust 中用于爬虫的库和工具<a class="headerlink" href="#2043-rust" title="Permanent link">&para;</a></h3>
+<p>在 Rust 中，有一些库和工具可用于编写爬虫，其中一些包括：</p>
+<ul>
+<li>
+<p><strong>reqwest</strong>：用于发送 HTTP 请求和处理响应的库。</p>
+</li>
+<li>
+<p><strong>scraper</strong>：用于解析和提取 HTML 数据的库。</p>
+</li>
+<li>
+<p><strong>tokio</strong>：用于异步编程的库，适用于高性能爬虫。</p>
+</li>
+<li>
+<p><strong>serde</strong>：用于序列化和反序列化数据的库，有助于处理从网页中提取的结构化数据。</p>
+</li>
+<li>
+<p><strong>rusqlite</strong> 或 <strong>diesel</strong>：用于数据库存储的库，可用于存储爬取的数据。</p>
+</li>
+<li>
+<p><strong>regex</strong>：用于正则表达式匹配，有时可用于从文本中提取数据。</p>
+</li>
+</ul>
+<h3 id="2044">20.4.4. 爬虫的伦理和法律考虑<a class="headerlink" href="#2044" title="Permanent link">&para;</a></h3>
+<p>在编写爬虫时，务必遵守网站的 <code>robots.txt</code> 文件和相关法律法规。爬虫应该尊重网站的隐私政策和使用条款，并避免对网站造成不必要的负担。爬虫不应滥用网站资源或进行未经授权的数据收集。</p>
+<p>总之，Rust 是一种强大的编程语言，可用于编写高性能、可靠和安全的网络爬虫。在编写爬虫程序时，始终要遵循最佳实践和伦理准则，以确保合法性和道德性。</p>
+<h3 id="_2">补充学习：序列化和反序列化<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>在Rust中，JSON（JavaScript Object Notation）是一种常见的数据序列化和反序列化格式，通常用于在不同的应用程序和服务之间交换数据。Rust提供了一些库来处理JSON数据的序列化和反序列化操作，其中最常用的是<code>serde</code>库。</p>
+<p>以下是如何在Rust中进行JSON序列化和反序列化的简要介绍：</p>
+<ol>
+<li><strong>添加serde库依赖：</strong> 首先，你需要在项目的<code>Cargo.toml</code>文件中添加<code>serde</code>和<code>serde_json</code>依赖，因为<code>serde_json</code>是serde的JSON支持库。在<code>Cargo.toml</code>中添加如下依赖：</li>
+</ol>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[dependencies]</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">serde</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;1.0.188&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;derive&quot;</span><span class="p">]</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">serde_json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;1.0&quot;</span>
+</span></code></pre></div>
+<p>然后，在你的Rust代码中导入<code>serde</code>和<code>serde_json</code>：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">use</span><span class="w"> </span><span class="n">serde</span><span class="p">::{</span><span class="n">Serialize</span><span class="p">,</span><span class="w"> </span><span class="n">Deserialize</span><span class="p">};</span>
+</span></code></pre></div>
+<ol>
+<li><strong>定义结构体：</strong> 如果你要将自定义类型序列化为JSON，你需要在结构体上实现<code>Serialize</code>和<code>Deserialize</code> trait。例如：</li>
+</ol>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">#[derive(Serialize, Deserialize)]</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">Person</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="kt">u32</span><span class="p">,</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li><strong>序列化为JSON：</strong> 使用<code>serde_json::to_string</code>将Rust数据结构序列化为JSON字符串：</li>
+</ol>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Person</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="n">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Alice&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">(),</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">        </span><span class="n">age</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="p">};</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">json_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serde_json</span><span class="p">::</span><span class="n">to_string</span><span class="p">(</span><span class="o">&amp;</span><span class="n">person</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">json_string</span><span class="p">);</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<ol>
+<li><strong>反序列化：</strong> 使用<code>serde_json::from_str</code>将JSON字符串反序列化为Rust数据结构：</li>
+</ol>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">json_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">r#&quot;{&quot;name&quot;:&quot;Bob&quot;,&quot;age&quot;:25}&quot;#</span><span class="p">;</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">person</span><span class="p">:</span><span class="w"> </span><span class="nc">Person</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serde_json</span><span class="p">::</span><span class="n">from_str</span><span class="p">(</span><span class="n">json_string</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Name: {}, Age: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">person</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">person</span><span class="p">.</span><span class="n">age</span><span class="p">);</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>这只是一个简单的介绍，你可以根据具体的需求进一步探索<code>serde</code>和<code>serde_json</code>库的功能，以及如何处理更复杂的JSON数据结构和场景。这些库提供了强大的工具，使得在Rust中进行JSON序列化和反序列化变得非常方便。</p>
+<h3 id="redis">案例：在Redis中构建中国大陆交易日库<a class="headerlink" href="#redis" title="Permanent link">&para;</a></h3>
+<p>这个案例演示了如何使用 Rust 编写一个简单的爬虫，从指定的网址获取中国大陆的节假日数据，然后将数据存储到 Redis 数据库中。这个案例涵盖了许多 Rust 的核心概念，包括异步编程、HTTP 请求、JSON 解析、错误处理以及与 Redis 交互等。</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">use</span><span class="w"> </span><span class="n">anyhow</span><span class="p">::{</span><span class="n">anyhow</span><span class="p">,</span><span class="w"> </span><span class="n">Error</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">AnyError</span><span class="p">};</span><span class="w"> </span><span class="c1">// 导入`anyhow`库中的`anyhow`和`Error`别名为`AnyError`</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">use</span><span class="w"> </span><span class="n">redis</span><span class="p">::{</span><span class="n">Commands</span><span class="p">};</span><span class="w"> </span><span class="c1">// 导入`redis`库中的`Commands`</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">use</span><span class="w"> </span><span class="n">reqwest</span><span class="p">::</span><span class="n">Client</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">ReqwestClient</span><span class="p">;</span><span class="w"> </span><span class="c1">// 导入`reqwest`库中的`Client`别名为`ReqwestClient`</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">use</span><span class="w"> </span><span class="n">serde</span><span class="p">::{</span><span class="n">Deserialize</span><span class="p">,</span><span class="w"> </span><span class="n">Serialize</span><span class="p">};</span><span class="w"> </span><span class="c1">// 导入`serde`库中的`Deserialize`和`Serialize`</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">use</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="p">;</span><span class="w"> </span><span class="c1">// 导入标准库中的`Error`</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="cp">#[derive(Debug, Serialize, Deserialize)]</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="k">struct</span><span class="w"> </span><span class="nc">DayType</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="n">date</span><span class="p">:</span><span class="w"> </span><span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="c1">// 定义一个结构体`DayType`，用于表示日期</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="p">}</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="cp">#[derive(Debug, Serialize, Deserialize)]</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="k">struct</span><span class="w"> </span><span class="nc">HolidaysType</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">    </span><span class="n">cn</span><span class="p">:</span><span class="w"> </span><span class="nb">Vec</span><span class="o">&lt;</span><span class="n">DayType</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// 定义一个结构体`HolidaysType`，包含一个日期列表</span>
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="p">}</span>
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="cp">#[derive(Debug, Serialize, Deserialize)]</span>
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="k">struct</span><span class="w"> </span><span class="nc">CalendarBody</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">    </span><span class="n">holidays</span><span class="p">:</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="n">HolidaysType</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// 定义一个结构体`CalendarBody`，包含一个可选的`HolidaysType`字段</span>
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="p">}</span>
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="c1">// 异步函数，用于获取API数据并存储到Redis</span>
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">store_calendar_to_redis</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">AnyError</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;http://pc.suishenyun.net/peacock/api/h5/festival&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// API的URL</span>
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ReqwestClient</span><span class="p">::</span><span class="n">new</span><span class="p">();</span><span class="w"> </span><span class="c1">// 创建一个Reqwest HTTP客户端</span>
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">).</span><span class="n">send</span><span class="p">().</span><span class="k">await</span><span class="o">?</span><span class="p">;</span><span class="w"> </span><span class="c1">// 发送HTTP GET请求并等待响应</span>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">body_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">text</span><span class="p">().</span><span class="k">await</span><span class="o">?</span><span class="p">;</span><span class="w"> </span><span class="c1">// 读取响应体的文本数据</span>
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="c1">// 将API响应的JSON字符串解析为CalendarBody结构体</span>
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">cb</span><span class="p">:</span><span class="w"> </span><span class="nc">CalendarBody</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="n">serde_json</span><span class="p">::</span><span class="n">from_str</span><span class="p">(</span><span class="o">&amp;</span><span class="n">body_s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">cb</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">cb</span><span class="p">,</span><span class="w"> </span><span class="c1">// 解析成功，得到CalendarBody结构体</span>
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">anyhow</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;Failed to parse JSON string: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">)),</span><span class="w"> </span><span class="c1">// 解析失败，返回错误</span>
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="w">    </span><span class="p">};</span>
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a>
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">holidays</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb</span><span class="p">.</span><span class="n">holidays</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 如果存在节假日数据</span>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">holidays</span><span class="p">.</span><span class="n">cn</span><span class="p">;</span><span class="w"> </span><span class="c1">// 获取日期列表</span>
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">dates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Vec</span><span class="p">::</span><span class="n">new</span><span class="p">();</span><span class="w"> </span><span class="c1">// 创建一个空的日期向量</span>
+</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a>
+</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="n">day</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">days</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="w">            </span><span class="n">dates</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">day</span><span class="p">.</span><span class="n">date</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="kt">u32</span><span class="p">);</span><span class="w"> </span><span class="c1">// 将日期添加到向量中，转换为u32类型</span>
+</span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a>
+</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">redis_url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;redis://:@127.0.0.1:6379/0&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// Redis服务器的连接URL</span>
+</span><span id="__span-10-44"><a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">redis</span><span class="p">::</span><span class="n">Client</span><span class="p">::</span><span class="n">open</span><span class="p">(</span><span class="n">redis_url</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w"> </span><span class="c1">// 打开Redis连接</span>
+</span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">con</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">get_connection</span><span class="p">()</span><span class="o">?</span><span class="p">;</span><span class="w"> </span><span class="c1">// 获取Redis连接</span>
+</span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a>
+</span><span id="__span-10-47"><a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a><span class="w">        </span><span class="c1">// 将每个日期添加到Redis集合中</span>
+</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="n">date</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="o">&amp;</span><span class="n">dates</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-49"><a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a><span class="w">            </span><span class="kd">let</span><span class="w"> </span><span class="n">_</span><span class="p">:</span><span class="w"> </span><span class="kt">usize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">con</span><span class="p">.</span><span class="n">sadd</span><span class="p">(</span><span class="s">&quot;holidays_set&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">date</span><span class="p">.</span><span class="n">to_string</span><span class="p">()).</span><span class="n">unwrap</span><span class="p">();</span><span class="w"> </span><span class="c1">// 添加日期到Redis集合</span>
+</span><span id="__span-10-50"><a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-10-51"><a id="__codelineno-10-51" name="__codelineno-10-51" href="#__codelineno-10-51"></a>
+</span><span id="__span-10-52"><a id="__codelineno-10-52" name="__codelineno-10-52" href="#__codelineno-10-52"></a><span class="w">        </span><span class="nb">Ok</span><span class="p">(())</span><span class="w"> </span><span class="c1">// 操作成功，返回Ok(())</span>
+</span><span id="__span-10-53"><a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-54"><a id="__codelineno-10-54" name="__codelineno-10-54" href="#__codelineno-10-54"></a><span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">anyhow</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;No holiday data found.&quot;</span><span class="p">))</span><span class="w"> </span><span class="c1">// 没有节假日数据，返回错误</span>
+</span><span id="__span-10-55"><a id="__codelineno-10-55" name="__codelineno-10-55" href="#__codelineno-10-55"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-10-56"><a id="__codelineno-10-56" name="__codelineno-10-56" href="#__codelineno-10-56"></a><span class="p">}</span>
+</span><span id="__span-10-57"><a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a>
+</span><span id="__span-10-58"><a id="__codelineno-10-58" name="__codelineno-10-58" href="#__codelineno-10-58"></a><span class="cp">#[tokio::main]</span>
+</span><span id="__span-10-59"><a id="__codelineno-10-59" name="__codelineno-10-59" href="#__codelineno-10-59"></a><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="nb">Box</span><span class="o">&lt;</span><span class="k">dyn</span><span class="w"> </span><span class="n">Error</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-60"><a id="__codelineno-10-60" name="__codelineno-10-60" href="#__codelineno-10-60"></a><span class="w">    </span><span class="c1">// 调用存储数据到Redis的函数</span>
+</span><span id="__span-10-61"><a id="__codelineno-10-61" name="__codelineno-10-61" href="#__codelineno-10-61"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Err</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">store_calendar_to_redis</span><span class="p">().</span><span class="k">await</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-62"><a id="__codelineno-10-62" name="__codelineno-10-62" href="#__codelineno-10-62"></a><span class="w">        </span><span class="fm">eprintln!</span><span class="p">(</span><span class="s">&quot;Error: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">);</span><span class="w"> </span><span class="c1">// 打印错误信息</span>
+</span><span id="__span-10-63"><a id="__codelineno-10-63" name="__codelineno-10-63" href="#__codelineno-10-63"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-10-64"><a id="__codelineno-10-64" name="__codelineno-10-64" href="#__codelineno-10-64"></a><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Holiday data stored in Redis successfully.&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// 打印成功消息</span>
+</span><span id="__span-10-65"><a id="__codelineno-10-65" name="__codelineno-10-65" href="#__codelineno-10-65"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-10-66"><a id="__codelineno-10-66" name="__codelineno-10-66" href="#__codelineno-10-66"></a>
+</span><span id="__span-10-67"><a id="__codelineno-10-67" name="__codelineno-10-67" href="#__codelineno-10-67"></a><span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span><span class="w"> </span><span class="c1">// 返回Ok(())</span>
+</span><span id="__span-10-68"><a id="__codelineno-10-68" name="__codelineno-10-68" href="#__codelineno-10-68"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>案例要点：</strong></p>
+<ol>
+<li><strong>依赖库引入：</strong> 为了实现这个案例，首先引入了一系列 Rust 的外部依赖库，包括 <code>reqwest</code> 用于发送 HTTP 请求、<code>serde</code> 用于 JSON 序列化和反序列化、<code>redis</code> 用于与 Redis 交互等等。这些库提供了必要的工具和功能，以便从网站获取数据并将其存储到 Redis 中。</li>
+<li><strong>数据结构定义：</strong> 在案例中定义了三个结构体，<code>DayType</code>、<code>HolidaysType</code> 和 <code>CalendarBody</code>，用于将 JSON 数据解析为 Rust 数据结构。这些结构体的字段对应于 JSON 数据中的字段，用于存储从网站获取的数据。</li>
+<li><strong>异步函数和错误处理：</strong> 使用 <code>async</code> 关键字定义了一个异步函数 <code>store_calendar_to_redis</code>，该函数负责执行以下操作：</li>
+<li>发送 HTTP 请求以获取节假日数据。</li>
+<li>解析 JSON 数据。</li>
+<li>将数据存储到 Redis 数据库中。 这个函数还演示了 Rust 中的错误处理机制，使用 <code>Result</code> 返回可能的错误，以及如何使用 <code>anyhow</code> 库来创建自定义错误信息。</li>
+<li><strong>Redis 数据存储：</strong> 使用 <code>redis</code> 库连接到 Redis 数据库，并使用 <code>sadd</code> 命令将节假日数据存储到名为 <code>holidays_set</code> 的 Redis 集合中。</li>
+<li><strong>main函数：</strong> <code>main</code> 函数是程序的入口点。它使用 <code>tokio</code> 框架的 <code>#[tokio::main]</code> 属性宏来支持异步操作。在 <code>main</code> 函数中，我们调用了 <code>store_calendar_to_redis</code> 函数来执行节假日数据的存储操作。如果存储过程中出现错误，错误信息将被打印到标准错误流中；否则，将打印成功消息。</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../Chapter%2019%20-%20%E6%97%B6%E9%97%B4%E5%A4%84%E7%90%86/" class="md-footer__link md-footer__link--prev" aria-label="上一页: Chapter 19 - 时间处理">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                Chapter 19 - 时间处理
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Chapter%2021%20-%20%E7%BA%BF%E7%A8%8B%E5%92%8C%E7%AE%A1%E9%81%93/" class="md-footer__link md-footer__link--next" aria-label="下一页: Chapter 21 - 线程和管道">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                Chapter 21 - 线程和管道
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.footer", "navigation.indexes", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>

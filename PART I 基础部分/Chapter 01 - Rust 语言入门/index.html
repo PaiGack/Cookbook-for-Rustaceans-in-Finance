@@ -1,0 +1,2294 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../Chapter%2002%20-%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>Chapter 01 - Rust 语言入门 - Rust量化金融开发指南</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-01-rust" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Rust量化金融开发指南" class="md-header__button md-logo" aria-label="Rust量化金融开发指南" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Rust量化金融开发指南
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 01 - Rust 语言入门
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5M7 15a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/arthur19q3/Cookbook-for-Rustaceans-in-Finance" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    arthur19q3/Cookbook-for-Rustaceans-in-Finance
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Cookbook for Rustaceans in Finance / Rust量化金融开发指南
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+    
+  
+  PART I 基础部分
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2023%20%E7%94%A8Polars%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8A%A0%E9%80%9F%E6%95%B0%E6%8D%AE%E6%A1%86%E6%9E%B6%E5%A4%84%E7%90%86/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  PART II 进阶部分
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Rust量化金融开发指南" class="md-nav__button md-logo" aria-label="Rust量化金融开发指南" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Rust量化金融开发指南
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/arthur19q3/Cookbook-for-Rustaceans-in-Finance" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    arthur19q3/Cookbook-for-Rustaceans-in-Finance
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cookbook for Rustaceans in Finance / Rust量化金融开发指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    PART I 基础部分
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            PART I 基础部分
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Chapter 01 - Rust 语言入门
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 01 - Rust 语言入门
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#11-unix-linuxmacos-rustup" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 在类 Unix 操作系统（Linux、MacOS）上安装 rustup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 安装C语言编译器（可选）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 安装C语言编译器（可选）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#macos" class="md-nav__link">
+    <span class="md-ellipsis">
+      MacOS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3 维护 Rust 工具链
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.3 维护 Rust 工具链">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      更新 Rust
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rust_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      卸载 Rust
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rust_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      检查 Rust 安装是否成功
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-nightly" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.4 Nightly 版本
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-cargo" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5 Cargo 的使用
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.5 Cargo 的使用">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      项目创建
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      依赖管理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      构建项目
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      添加依赖
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      执行预先编纂的测试
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      文档生成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      发布和分发
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      列出依赖项
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cargo-rustup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cargo 和 rustup 的区别
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cargo 和 rustup 的区别">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rustup" class="md-nav__link">
+    <span class="md-ellipsis">
+      rustup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cargo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cargo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-cargo" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.7 用 Cargo 创立并搭建第一个项目
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.7 用 Cargo 创立并搭建第一个项目">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cargo-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      用 cargo new 新建项目
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cargotoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      编辑 Cargo.toml
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cargo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      构建并运行 Cargo 项目
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      发布构建
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.8 需要了解的几个 Rust 概念
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.8 需要了解的几个 Rust 概念">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      作用域（Scope）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ownership" class="md-nav__link">
+    <span class="md-ellipsis">
+      所有权（Ownership）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mutability" class="md-nav__link">
+    <span class="md-ellipsis">
+      可变性（Mutability）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#borrowing" class="md-nav__link">
+    <span class="md-ellipsis">
+      借用（Borrowing）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      生命周期（Lifetime）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2002%20-%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 02 - 格式化输出
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2003%20-%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 03 - 原生类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2004%20-%20%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 04 - 自定义类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2005%20-%20%E6%A0%87%E5%87%86%E5%BA%93%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 05 - 标准库类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2006%20-%20%E5%8F%98%E9%87%8F%E5%92%8C%E4%BD%9C%E7%94%A8%E5%9F%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 06   变量和作用域
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2007%20-%20%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 7 - 类型系统
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2008%20-%20%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 8 - 类型转换
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2009%20-%20%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 9 - 流程控制
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2010%20-%20%E5%87%BD%E6%95%B0%2C%20%E6%96%B9%E6%B3%95%20%E5%92%8C%20%E9%97%AD%E5%8C%85/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 10 - 函数, 方法 和 闭包
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2011%20-%20%E6%A8%A1%E5%9D%97/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 11 - 模块
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2012%20-%20Cargo%20%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 12 - Cargo 的进阶使用
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2013%20-%20%E5%B1%9E%E6%80%A7%28Attributes%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 13 - 属性(Attributes)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2014%20-%20%E6%B3%9B%E5%9E%8B%E8%BF%9B%E9%98%B6%28Advanced%20Generic%20Type%20Usage%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 14 - 泛型进阶(Advanced Generic Type Usage)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2015%20-%20%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%A7%84%E5%88%99%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 15 - 作用域规则和生命周期
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2016%20-%20%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E8%BF%9B%E9%98%B6%28Advanced%20Error%20handling%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 16 - 错误处理进阶(Advanced Error handling)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2017%20-%20%E7%89%B9%E6%80%A7%20%28trait%29%20%E8%AF%A6%E8%A7%A3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 17 - 特性 (trait) 详解
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2018%20-%20%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 18 - 创建自定义宏
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2019%20-%20%E6%97%B6%E9%97%B4%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 19 - 时间处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2020%20-%20Redis%E3%80%81%E7%88%AC%E8%99%AB%E3%80%81%E4%BA%A4%E6%98%93%E6%97%A5%E5%BA%93/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 20 - Redis、爬虫、交易日库
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2021%20-%20%E7%BA%BF%E7%A8%8B%E5%92%8C%E7%AE%A1%E9%81%93/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 21 - 线程和管道
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2022%20-%20%20%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 22 - 文件处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    PART II 进阶部分
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            PART II 进阶部分
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2023%20%E7%94%A8Polars%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8A%A0%E9%80%9F%E6%95%B0%E6%8D%AE%E6%A1%86%E6%9E%B6%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 23 用Polars实现并加速数据框架处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2024%20-%20%E6%97%B6%E5%BA%8F%E6%95%B0%E6%8D%AE%E5%BA%93Clickhouse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 24 - 时序数据库Clickhouse
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2025%20-%20Unsafe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 25 - Unsafe
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2026%20-%20%E6%96%87%E6%A1%A3%E5%92%8C%E6%B5%8B%E8%AF%95/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 26 - 文档和测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20II%20%E8%BF%9B%E9%98%B6%E9%83%A8%E5%88%86/Chapter%2027%20%E5%B8%B8%E8%A7%81%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 27 常见技术指标及其实现
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#11-unix-linuxmacos-rustup" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.1 在类 Unix 操作系统（Linux、MacOS）上安装 rustup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-c" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.2 安装C语言编译器（可选）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.2 安装C语言编译器（可选）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#macos" class="md-nav__link">
+    <span class="md-ellipsis">
+      MacOS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linux
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.3 维护 Rust 工具链
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.3 维护 Rust 工具链">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      更新 Rust
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rust_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      卸载 Rust
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rust_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      检查 Rust 安装是否成功
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-nightly" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.4 Nightly 版本
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-cargo" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.5 Cargo 的使用
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.5 Cargo 的使用">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      项目创建
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      依赖管理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      构建项目
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      添加依赖
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      执行预先编纂的测试
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      文档生成
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      发布和分发
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      列出依赖项
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cargo-rustup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cargo 和 rustup 的区别
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cargo 和 rustup 的区别">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rustup" class="md-nav__link">
+    <span class="md-ellipsis">
+      rustup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cargo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cargo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#17-cargo" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.7 用 Cargo 创立并搭建第一个项目
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.7 用 Cargo 创立并搭建第一个项目">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cargo-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      用 cargo new 新建项目
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cargotoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      编辑 Cargo.toml
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cargo_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      构建并运行 Cargo 项目
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      发布构建
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#18-rust" class="md-nav__link">
+    <span class="md-ellipsis">
+      1.8 需要了解的几个 Rust 概念
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1.8 需要了解的几个 Rust 概念">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      作用域（Scope）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ownership" class="md-nav__link">
+    <span class="md-ellipsis">
+      所有权（Ownership）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mutability" class="md-nav__link">
+    <span class="md-ellipsis">
+      可变性（Mutability）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#borrowing" class="md-nav__link">
+    <span class="md-ellipsis">
+      借用（Borrowing）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      生命周期（Lifetime）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="chapter-01-rust">Chapter 01 - Rust 语言入门<a class="headerlink" href="#chapter-01-rust" title="Permanent link">&para;</a></h1>
+<div class="toc">
+<ul>
+<li><a href="#chapter-01-rust">Chapter 01 - Rust 语言入门</a><ul>
+<li><a href="#11-unix-linuxmacos-rustup">1.1 在类 Unix 操作系统（Linux、MacOS）上安装 rustup</a></li>
+<li><a href="#12-c">1.2 安装C语言编译器（可选）</a><ul>
+<li><a href="#macos">MacOS</a></li>
+<li><a href="#linux">Linux</a></li>
+</ul>
+</li>
+<li><a href="#13-rust">1.3 维护 Rust 工具链</a><ul>
+<li><a href="#rust">更新 Rust</a></li>
+<li><a href="#rust_1">卸载 Rust</a></li>
+<li><a href="#rust_2">检查 Rust 安装是否成功</a></li>
+</ul>
+</li>
+<li><a href="#14-nightly">1.4 Nightly 版本</a></li>
+<li><a href="#15-cargo">1.5 Cargo 的使用</a><ul>
+<li><a href="#_1">项目创建</a></li>
+<li><a href="#_2">依赖管理</a></li>
+<li><a href="#_3">构建项目</a></li>
+<li><a href="#_4">添加依赖</a></li>
+<li><a href="#_5">执行预先编纂的测试</a></li>
+<li><a href="#_6">文档生成</a></li>
+<li><a href="#_7">发布和分发</a></li>
+<li><a href="#_8">列出依赖项</a></li>
+<li><a href="#cargo-rustup">Cargo 和 rustup 的区别</a><ul>
+<li><a href="#rustup">rustup</a></li>
+<li><a href="#cargo">Cargo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#17-cargo">1.7 用 Cargo 创立并搭建第一个项目</a><ul>
+<li><a href="#cargo-new">用 cargo new 新建项目</a></li>
+<li><a href="#cargotoml">编辑 Cargo.toml</a></li>
+<li><a href="#cargo_1">构建并运行 Cargo 项目</a></li>
+<li><a href="#_9">发布构建</a></li>
+</ul>
+</li>
+<li><a href="#18-rust">1.8 需要了解的几个 Rust 概念</a><ul>
+<li><a href="#scope">作用域（Scope）</a></li>
+<li><a href="#ownership">所有权（Ownership）</a></li>
+<li><a href="#mutability">可变性（Mutability）</a></li>
+<li><a href="#borrowing">借用（Borrowing）</a></li>
+<li><a href="#lifetime">生命周期（Lifetime）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>开始之前我们不妨做一些简单的准备工作。</p>
+<h2 id="11-unix-linuxmacos-rustup">1.1 在类 Unix 操作系统（Linux、MacOS）上安装 rustup<a class="headerlink" href="#11-unix-linuxmacos-rustup" title="Permanent link">&para;</a></h2>
+<p>rustup 是 Rust 的安装和管理工具，并且官网推荐使用 rustup 安装 Rust。</p>
+<p>打开终端并输入下面命令：</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$<span class="w"> </span>curl<span class="w"> </span>--proto<span class="w"> </span><span class="s1">&#39;=https&#39;</span><span class="w"> </span>--tlsv1.2<span class="w"> </span>https://sh.rustup.rs<span class="w"> </span>-sSf<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+</span></code></pre></div>
+<p>只要出现下面这行：</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Rust<span class="w"> </span>is<span class="w"> </span>installed<span class="w"> </span>now.<span class="w"> </span>Great!<span class="w"> </span>
+</span></code></pre></div>
+<p>就完成 Rust 安装了。</p>
+<p>特别地，在 MacOS 上，如果安装了 Homebrew，那么可以使用以下命令安装：</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>$<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>rustup
+</span></code></pre></div>
+<blockquote>
+<p><strong>[建议]</strong> 量化金融从业人员为什么应该尝试接触使用 Linux？</p>
+<ol>
+<li>稳定性：Linux 系统被认为是非常稳定的。在金融领域，系统的稳定性和可靠性至关重要，因为任何技术故障都可能对业务产生重大影响。因此，Linux 成为了一个被广泛接受的选择。</li>
+<li>灵活性：Linux 的灵活性允许用户根据需求定制系统。在量化金融领域，可能需要使用各种不同的软件和工具来处理数据、进行模型开发和测试等。Linux 允许用户更灵活地使用这些工具，并通过修改源代码来提高性能。</li>
+<li>安全性：Linux 的开源开发方式意味着错误可以更快地被暴露出来，这让技术人员可以更早地发现并解决潜在的安全隐患。此外，Linux 对可能对系统产生安全隐患的远程程序调用进行了限制，进一步提高了系统的安全性。</li>
+<li>可维护性：Linux 系统的维护要求相对较高，需要一定的技术水平。但是，对于长期运行的功能需求，如备份历史行情数据和实时行情数据的入库和维护，Linux 系统提供了高效的命令行方式，可以更快速地进行恢复和维护。</li>
+</ol>
+</blockquote>
+<h2 id="12-c">1.2 安装C语言编译器（可选）<a class="headerlink" href="#12-c" title="Permanent link">&para;</a></h2>
+<p>Rust 有的时候会依赖 libc 和链接器 linker ，比如 PyTorch 的 C bindings 的 Rust 版本 tch.rs 就自然依赖 C。因此如果遇到了提示链接器无法执行的错误，你需要再手动安装一个 C 语言编译器：</p>
+<h3 id="macos">MacOS<a class="headerlink" href="#macos" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$<span class="w"> </span>xcode-select<span class="w"> </span>--install
+</span></code></pre></div>
+<h3 id="linux">Linux<a class="headerlink" href="#linux" title="Permanent link">&para;</a></h3>
+<p>如果你使用 Ubuntu，则可安装 build-essential。</p>
+<p>其他 Linux 用户一般应按照相应发行版的文档来安装 gcc 或 clang。</p>
+<h2 id="13-rust">1.3 维护 Rust 工具链<a class="headerlink" href="#13-rust" title="Permanent link">&para;</a></h2>
+<h3 id="rust">更新 Rust<a class="headerlink" href="#rust" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>$<span class="w"> </span>rustup<span class="w"> </span>update
+</span></code></pre></div>
+<h3 id="rust_1">卸载 Rust<a class="headerlink" href="#rust_1" title="Permanent link">&para;</a></h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>$<span class="w"> </span>rustup<span class="w"> </span>self<span class="w"> </span>uninstall
+</span></code></pre></div>
+<h3 id="rust_2">检查 Rust 安装是否成功<a class="headerlink" href="#rust_2" title="Permanent link">&para;</a></h3>
+<p>检查 rustc 版本</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>$<span class="w"> </span>rustc<span class="w"> </span>-V<span class="w"> </span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>rustc<span class="w"> </span><span class="m">1</span>.72.0<span class="w"> </span><span class="o">(</span>5680fa18f<span class="w"> </span><span class="m">2023</span>-08-23<span class="o">)</span>
+</span></code></pre></div>
+<p>检查 Cargo 版本</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>$<span class="w"> </span>cargo<span class="w"> </span>-V<span class="w"> </span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>cargo<span class="w"> </span><span class="m">1</span>.72.0<span class="w"> </span><span class="o">(</span>103a7ff2e<span class="w"> </span><span class="m">2023</span>-08-15<span class="o">)</span>
+</span></code></pre></div>
+<blockquote>
+<p>版本会根据当前的版本有所不同，总之 -V 后出现版本号说明 Rust 安装成功了。</p>
+</blockquote>
+<h2 id="14-nightly">1.4 Nightly 版本<a class="headerlink" href="#14-nightly" title="Permanent link">&para;</a></h2>
+<p>作为一门编程语言，Rust 非常注重代码的稳定性。为了达到「稳定而不停滞」，Rust 的开发遵循一个列车时刻表。也就是说，所有的开发工作都在 Rust 存储库的主分支上进行。Rust 有三个发布通道：</p>
+<ol>
+<li><strong>夜间（Nightly）</strong></li>
+<li><strong>测试（Beta）</strong></li>
+<li><strong>稳定（Stable）</strong></li>
+</ol>
+<p>以下是开发和发布流程的示例：假设 Rust 团队正在开发 Rust 1.5 的版本。该版本在 2015 年 12 月发布，但我们可以用这个版本号来说明。Rust 添加了一个新功能：新的提交被合并到主分支。每天晚上，都会生成一个新的 Rust 夜间版本。</p>
+<p>对于 Rust Nightly 来说，几乎每天都是发布日，这些发布是由 Rust 社区的发布基建（release infrastructure）自动创建的。</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>nightly: * - - * - - *
+</span></code></pre></div>
+<p>每六个礼拜，<code>beta</code> 分支都会从被夜间版本使用的 <code>master</code> 分支中分叉出来，单独发布一次。</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>nightly: * - - * - - *
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>                     |
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>beta:                *
+</span></code></pre></div>
+<p>大多数Rust开发者主要使用 <strong>Stable</strong> 通道，但那些想尝试实验性新功能的人可以使用 <strong>Nightly</strong> 或 <strong>Beta</strong>。</p>
+<p>Rust 编程语言的 Nightly 版本是不断更新的。有的时候为了用到 Rust 的最新的语言特性，或者安装一些依赖 Rust Nightly 的软件包，我们会需要切换到 Nightly。</p>
+<p>但是请注意，Nightly 版本包含最新的功能和改进，所以也可能不够稳定，在生产环境中使用时要小心。</p>
+<p><strong>安装 Nightly 版本：</strong></p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>$<span class="w"> </span>rustup<span class="w"> </span>install<span class="w"> </span>nightly
+</span></code></pre></div>
+<p><strong>切换到 Nightly 版本：</strong></p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>$<span class="w"> </span>rustup<span class="w"> </span>default<span class="w"> </span>nightly
+</span></code></pre></div>
+<p><strong>更新 Nightly 版本：</strong></p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>$<span class="w"> </span>rustup<span class="w"> </span>update<span class="w"> </span>nightly
+</span></code></pre></div>
+<p><strong>切换回 Stable 版本：</strong></p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>$<span class="w"> </span>rustup<span class="w"> </span>default<span class="w"> </span>stable
+</span></code></pre></div>
+<h2 id="15-cargo">1.5 Cargo 的使用<a class="headerlink" href="#15-cargo" title="Permanent link">&para;</a></h2>
+<p><strong>Cargo</strong> 是 Rust 编程语言的官方构建工具和包管理器。它是一个非常强大的工具，用于帮助开发者创建、构建、测试和发布 Rust 项目。以下是 Cargo 的一些主要功能：</p>
+<h3 id="_1">项目创建<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h3>
+<p>通过命令</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>$<span class="w"> </span>cargo<span class="w"> </span>new
+</span></code></pre></div>
+<p>可以创建新的 Rust 项目，包括创建项目的基本结构、生成默认的源代码文件和配置文件。</p>
+<h3 id="_2">依赖管理<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>Cargo 管理项目的依赖项。你可以在项目的 <em>Cargo.toml</em> 文件中指定依赖项，然后运行</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>$<span class="w"> </span>cargo<span class="w"> </span>build
+</span></code></pre></div>
+<p>命令来下载和构建这些依赖项。这使得添加、更新和删除依赖项变得非常容易。</p>
+<h3 id="_3">构建项目<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>通过运行</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>$<span class="w"> </span>cargo<span class="w"> </span>build
+</span></code></pre></div>
+<p>命令，你可以构建你的 Rust 项目。Cargo 会自动处理编译、链接和生成可执行文件或库的过程。</p>
+<h3 id="_4">添加依赖<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>使用 <code>cargo add</code> 或编辑项目的 <em>Cargo.toml</em> 文件来添加依赖项。<code>cargo add</code> 命令会自动更新 <em>Cargo.toml</em> 并下载依赖项。</p>
+<p>例如，要添加一个名为 <code>rand</code> 的依赖，可以运行：</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>$<span class="w"> </span>cargo<span class="w"> </span>add<span class="w"> </span>rand
+</span></code></pre></div>
+<h3 id="_5">执行预先编纂的测试<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>Cargo 允许你编写和运行测试，以确保代码的正确性。你可以使用 <code>cargo test</code> 命令来运行测试套件。</p>
+<h3 id="_6">文档生成<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>Cargo 可以自动生成项目文档。通过运行 <code>cargo doc</code> 命令，如果我们的**文档注释**（以 <code>///</code> 或者 <code>//!</code> 起始的注释）符合 Markdown 规范，你可以生成包括库文档和文档注释的 HTML 文档，以便其他开发者查阅。</p>
+<h3 id="_7">发布和分发<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>执行 <code>cargo login</code> 登陆 <a href="https://crates.io/">crates.io</a> 后，再在项目文件夹执行 <code>cargo publish</code> 可以帮助你将你的 Rust 库发布到 <a href="https://crates.io/">crates.io</a>，Rust 生态系统的官方包仓库。这使得分享你的代码和库变得非常容易。</p>
+<h3 id="_8">列出依赖项<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<p>使用 <code>cargo tree</code> 命令可以查看项目的依赖项树，以了解你的项目使用了哪些库以及它们之间的依赖关系。例如，要查看依赖项树，只需在项目目录中运行：</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cargo<span class="w"> </span>tree
+</span></code></pre></div>
+<h3 id="cargo-rustup">Cargo 和 rustup 的区别<a class="headerlink" href="#cargo-rustup" title="Permanent link">&para;</a></h3>
+<p><code>rustup</code> 和 <code>Cargo</code> 是 Rust 生态系统中两个不同的工具，各自承担着不同的任务：</p>
+<h4 id="rustup">rustup<a class="headerlink" href="#rustup" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>rustup</code> 是 Rust 工具链管理器。它用于安装、升级和管理不同版本的 Rust 编程语言。</li>
+<li>通过 <code>rustup</code>，你可以轻松地在你的计算机上**安装多个 Rust 版本**，以便在项目之间切换。</li>
+<li>它还管理 Rust 工具链的组件，例如 Rust 标准库、Rustfmt（用于格式化代码的工具）等。</li>
+<li><code>rustup</code> 还提供了一些其他功能，如设置默认工具链、卸载 Rust 等。</li>
+</ul>
+<h4 id="cargo">Cargo<a class="headerlink" href="#cargo" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Cargo 是 Rust 的构建工具和包管理器。它用于创建、构建和管理 Rust 项目。</li>
+<li>Cargo 可以创建新的 Rust 项目，添加依赖项，构建项目，运行测试，生成文档，发布库等等。</li>
+<li>它提供了一种简便的方式来管理项目的依赖和构建过程，使得创建和维护 Rust 项目变得容易。</li>
+<li>与构建相关的任务，如编译、运行测试、打包应用程序等，都可以通过 Cargo 来完成。</li>
+</ul>
+<p>总之，rustup 主要用于管理 Rust 的版本和工具链，而 Cargo 用于管理和构建具体的 Rust 项目。这两个工具一起使得在 Rust 中开发和维护项目变得非常方便。</p>
+<h2 id="17-cargo">1.7 用 Cargo 创立并搭建第一个项目<a class="headerlink" href="#17-cargo" title="Permanent link">&para;</a></h2>
+<h3 id="cargo-new">用 <code>cargo new</code> 新建项目<a class="headerlink" href="#cargo-new" title="Permanent link">&para;</a></h3>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>$<span class="w"> </span>cargo<span class="w"> </span>new<span class="w"> </span>new_strategy<span class="w"> </span><span class="c1"># new_strategy 是我们的新 crate</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>new_strategy
+</span></code></pre></div>
+<p>第一行命令新建了名为 <em>new_strategy</em> 的文件夹。我们将项目命名为 <em>new_strategy</em> ，同时 Cargo 在一个同名文件夹中创建树状分布的项目文件。</p>
+<p>进入 <em>new_strategy</em> 文件夹，然后键入 <code>ls</code> 列出文件。将会看到 Cargo 生成了两个文件和一个目录：一个 <em>Cargo.toml</em> 文件，一个 <em>src</em> 目录，以及位于 <em>src</em> 目录中的 <em>main.rs</em> 文件。</p>
+<p>此时 Cargo 在 <em>new_strategy</em> 文件夹初始化了一个 Git 仓库，并带有一个 <em>.gitignore</em> 文件。</p>
+<blockquote>
+<p>注意：Cargo 是默认使用 Git 作为版本控制系统的（Version Control System, VCS）。可以通过 <code>--vcs</code> 参数使 <code>cargo new</code> 切换到其它版本控制系统，或者不使用 VCS。运行 <code>cargo new --help</code> 查看可用的选项。</p>
+</blockquote>
+<h3 id="cargotoml">编辑 <em>Cargo.toml</em><a class="headerlink" href="#cargotoml" title="Permanent link">&para;</a></h3>
+<p>现在可以找到项目文件夹中的 <em>Cargo.toml</em> 文件。这应该是一个 Cargo 最小化工作样本（Minimal Working Example, MWE）的样子了。它看起来应该是如下这样：</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">[package]</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;new_strategy&quot;</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span><span class="w"> </span><span class="c1"># 此软件包的版本</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">edition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;2021&quot;</span><span class="w"> </span><span class="c1"># rust 的规范版本，成书时最近一次更新是 2021 年。</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="k">[dependencies]</span>
+</span></code></pre></div>
+<p>第一行 <code>[package]</code>，是一个 section 的标题，表明下面的语句用来配置一个包（package）。随着我们在这个文件增加更多的信息，还将增加其他 sections。</p>
+<p>第二个 section 即 <code>[dependencies]</code>，一般我们在这里填项目所依赖的任何包。</p>
+<p>在 Rust 中，代码包被称为 <em>crate</em>。我们把 <em>crate</em> 的信息填写在这里以后，再运行 <code>cargo build</code>，Cargo 就会自动下载并构建这个项目。虽然这个项目目前并不需要其他的 crate。</p>
+<p>现在打开 <em>new_strategy/src/main.rs</em> 看看：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Hello, world!&quot;</span><span class="p">);</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Cargo 已经在 <em>src</em> 文件夹为我们自动生成了一个「Hello, world!」程序。虽然看上去有点越俎代庖，但是这也是为了提醒我们，Cargo 期望源代码文件（以 <em>.rs</em> 后缀结尾的 Rust 语言文件）位于 <em>src</em> 目录中。项目根目录只存放**说明文件**（<em>README</em>）、<strong>许可协议</strong>（<em>license</em>）信息、<strong>配置文件</strong>（<em>Cargo.toml</em>）和其他跟代码无关的文件。使用 Cargo 可帮助你保持项目干净整洁。这里为一切事物所准备，一切都位于正确的位置。</p>
+<h3 id="cargo_1">构建并运行 Cargo 项目<a class="headerlink" href="#cargo_1" title="Permanent link">&para;</a></h3>
+<p>现在在 <code>new_strategy</code> 目录下，输入下面的命令来构建项目：</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>$<span class="w"> </span>cargo<span class="w"> </span>build
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">   </span>Compiling<span class="w"> </span>new_strategy<span class="w"> </span>v0.1.0<span class="w"> </span><span class="o">(</span>file:///projects/new_strategy<span class="o">)</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">    </span>Finished<span class="w"> </span>dev<span class="w"> </span><span class="o">[</span>unoptimized<span class="w"> </span>+<span class="w"> </span>debuginfo<span class="o">]</span><span class="w"> </span>target<span class="o">(</span>s<span class="o">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">2</span>.85<span class="w"> </span>secs
+</span></code></pre></div>
+<p>这个命令会在 <em>target/debug/new_strategy</em> 下创建一个可执行文件（在 Windows 上是 <em>target\debug\new_strategy.exe</em>），而不是放在目前目录下。你可以使用下面的命令来运行它：</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>$<span class="w"> </span>./target/debug/new_strategy
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>Hello,<span class="w"> </span>world!
+</span></code></pre></div>
+<p>Cargo 还提供了一 text 个名为 <code>cargo check</code> 的命令。该命令快速检查代码确保其可以编译：</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>$<span class="w"> </span>cargo<span class="w"> </span>check
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">   </span>Checking<span class="w"> </span>new_strategy<span class="w"> </span>v0.1.0<span class="w"> </span><span class="o">(</span>file:///projects/new_strategy<span class="o">)</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">    </span>Finished<span class="w"> </span>dev<span class="w"> </span><span class="o">[</span>unoptimized<span class="w"> </span>+<span class="w"> </span>debuginfo<span class="o">]</span><span class="w"> </span>target<span class="o">(</span>s<span class="o">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">0</span>.14<span class="w"> </span>secs
+</span></code></pre></div>
+<p>因为编译的耗时有时可以非常长，所以此时我们更改或修正代码后，并不会频繁执行 <code>cargo build</code> 来重构项目，而是使用 <code>cargo check</code>。</p>
+<h3 id="_9">发布构建<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<p>当我们最终准备好交付代码时，可以使用 <code>cargo build --release</code> 来优化编译项目。</p>
+<p>这会在 <em>target/release</em> 而不是 <em>target/debug</em> 下生成可执行文件。这些优化可以让 Rust 代码运行的更快，不过启用这些优化也需要消耗显著更长的编译时间。</p>
+<p>如果你要对代码运行时间进行基准测试，请确保运行 <code>cargo build --release</code> 并使用 <em>target/release</em> 下的可执行文件进行测试。</p>
+<h2 id="18-rust">1.8 需要了解的几个 Rust 概念<a class="headerlink" href="#18-rust" title="Permanent link">&para;</a></h2>
+<p>好的，让我为每个概念再提供一个更详细的案例，以帮助你更好地理解。</p>
+<h3 id="scope">作用域（Scope）<a class="headerlink" href="#scope" title="Permanent link">&para;</a></h3>
+<p>作用域是指在代码中变量或值的可见性和有效性范围。在作用域内声明的变量或值可以在该作用域内使用，而在作用域外无法访问。简单来说，作用域决定了你在哪里可以使用一个变量或值。</p>
+<p>在大多数编程语言中，作用域通常由大括号 <code>{}</code> 来界定，例如在函数、循环、条件语句或代码块中。变量或值在进入作用域时创建，在离开作用域时销毁。这有助于确保程序的局部性和变量不会干扰其他部分的代码。</p>
+<p>例如，在下面的 Rust 代码中，<code>x</code> 变量的作用域在函数 <code>main</code> 中，因此只能在函数内部使用：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="c1">// 变量 x 的作用域从这里开始</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">    </span><span class="c1">// 在这里可以使用变量 x</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="p">}</span><span class="w"> </span><span class="c1">// 变量 x 的作用域在这里结束，x 被销毁</span>
+</span></code></pre></div>
+<p>总之，作用域是编程语言中用来控制变量和值可见性的概念，它确保了变量只在适当的地方可用，从而提高了代码的可维护性和安全性。在第 6 章我们还会详细讲解作用域（Scope）。</p>
+<h3 id="ownership">所有权（Ownership）<a class="headerlink" href="#ownership" title="Permanent link">&para;</a></h3>
+<p>想象一下你有一个独特的玩具火车，只有你能够玩。这个火车是你的所有物。当你不再想玩这个火车时，你可以把它扔掉，它就不再存在了。在 Rust 中，每个值就像是这个玩具火车，有一个唯一的所有者。一旦所有者不再需要这个值，它会被销毁，这样就不会占用内存空间。</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">toy_train</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Awesome train&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">();</span><span class="w"> </span><span class="c1">// 创建一个玩具火车</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span><span class="c1">// toy_train 是它的所有者</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">train_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_name</span><span class="p">(</span><span class="o">&amp;</span><span class="n">toy_train</span><span class="p">);</span><span class="w"> </span><span class="c1">// 传递火车的引用</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Train&#39;s name: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">train_name</span><span class="p">);</span>
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="w">    </span><span class="c1">// 接下来 toy_train 离开了 main 函数的作用域， 在 main 函数外面谁也不能再玩  toy_train 了。</span>
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="p">}</span>
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>
+</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="k">fn</span><span class="w"> </span><span class="nf">get_name</span><span class="p">(</span><span class="n">train</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nb">String</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="w">    </span><span class="c1">// 接受 String 的引用，不获取所有权</span>
+</span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="w">    </span><span class="n">train</span><span class="p">.</span><span class="n">clone</span><span class="p">()</span><span class="w"> </span><span class="c1">// 返回火车的名字的拷贝</span>
+</span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>在这个例子中，我们创建了一个 <code>toy_train</code> 的值，然后将它的引用传递给 <code>get_name</code> 函数，而不是移动它的所有权。这样，函数可以读取 <code>toy_train</code> 的数据，但 <code>toy_train</code> 的所有权仍然在 <code>main</code> 函数中。当 <code>toy_train</code> 离开 <code>main</code> 函数的作用域时，它的所有权被移动到函数内部，所以在函数外部不能再使用 <code>toy_train</code>。</p>
+<h3 id="mutability">可变性（Mutability）<a class="headerlink" href="#mutability" title="Permanent link">&para;</a></h3>
+<p>可变性（mutability）是指在编程中一个变量或数据是否可以被修改或改变的特性。在许多编程语言中，变量通常有二元对立的状态：可变（ mutable ）和不可变（immutable）。</p>
+<ul>
+<li>
+<p><strong>可变（Mutable）</strong>：如果一个变量是可变的，意味着你可以在创建后更改它的值。你可以对可变变量进行赋值操作，修改其中的数据。这在编程中非常常见，因为它允许程序在运行时动态地改变数据。</p>
+</li>
+<li>
+<p><strong>不可变（Immutable）</strong>：如果一个变量是不可变的，意味着一旦赋值后，就无法再更改其值。不可变变量在多线程编程和并发环境中非常有用，因为它们可以避免竞争条件和数据不一致性。</p>
+</li>
+</ul>
+<p>在很多编程语言中，变量默认是可变的，但有些语言（如 Rust ）选择默认为不可变，需要显式地声明变量为可变才能进行修改。</p>
+<p>在 Rust 中，可变性是一项强制性的特性，这意味着默认情况下变量是不可变的。如果你想要一个可变的变量，需要使用 <code>mut</code> 关键字显式声明它。例如：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="c1">// 不可变变量x</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span><span class="w"> </span><span class="c1">// 可变变量y，可以修改其值</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="p">;</span><span class="w"> </span><span class="c1">// 可以修改y的值</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>这种默认的不可变性有助于提高代码的安全性，因为它防止了意外的数据修改。但也允许你选择在需要时显式地声明变量为可变，以便进行修改。</p>
+<h3 id="borrowing">借用（Borrowing）<a class="headerlink" href="#borrowing" title="Permanent link">&para;</a></h3>
+<p>想象一下你有一本漫画书，你的朋友可以看，但不能把它带走或画在上面。你允许你的朋友借用这本书，但不能改变它。在 Rust 中，你可以创建共享引用，就像是让朋友看你的书，但不能修改它。</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">comic_book</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Spider-Man&quot;</span><span class="p">.</span><span class="n">to_string</span><span class="p">();</span><span class="w"> </span><span class="c1">// 创建一本漫画书</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">    </span><span class="c1">// comic_book 是它的所有者</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">book_title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_title</span><span class="p">(</span><span class="o">&amp;</span><span class="n">comic_book</span><span class="p">);</span><span class="w"> </span><span class="c1">// 传递书的引用</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Book title: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">book_title</span><span class="p">);</span><span class="w"> </span><span class="c1">// 返回&quot;Book title: Spider-Man&quot;</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="w">    </span><span class="n">add_subtitle</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">comic_book</span><span class="p">);</span><span class="w"> </span><span class="c1">// 尝试修改书，需要可变引用</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="w">    </span><span class="c1">// comic_book 离开了作用域，它的所有权被移动到 get_title 函数</span>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="w">    </span><span class="c1">// 这里不能再阅读或修改 comic_book</span>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="p">}</span>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a>
+</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="k">fn</span><span class="w"> </span><span class="nf">get_title</span><span class="p">(</span><span class="n">book</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nb">String</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">String</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-28-15"><a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="w">    </span><span class="c1">// 接受 String 的引用，不获取所有权</span>
+</span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="w">    </span><span class="n">book</span><span class="p">.</span><span class="n">clone</span><span class="p">()</span><span class="w"> </span><span class="c1">// 返回书的标题的拷贝</span>
+</span><span id="__span-28-17"><a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="p">}</span>
+</span><span id="__span-28-18"><a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a>
+</span><span id="__span-28-19"><a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="k">fn</span><span class="w"> </span><span class="nf">add_subtitle</span><span class="p">(</span><span class="n">book</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="nb">String</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-28-20"><a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a><span class="w">    </span><span class="c1">// 接受可变 String 的引用，可以修改书</span>
+</span><span id="__span-28-21"><a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="w">    </span><span class="n">book</span><span class="p">.</span><span class="n">push_str</span><span class="p">(</span><span class="s">&quot;: The Amazing Adventures&quot;</span><span class="p">);</span>
+</span><span id="__span-28-22"><a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>在这个例子中，我们首先创建了一本漫画书 <code>comic_book</code>，然后将它的引用传递给<code>get_title</code> 函数，而不是移动它的所有权。这样，函数可以读取 <code>comic_book</code> 的数据，但不能修改它。然后，我们尝试调用 <code>add_subtitle</code> 函数，该函数需要一个可变引用，因为它要修改书的内容。在 Rust 中，对变量的写的权限，可以通过可变引用来控制。</p>
+<h3 id="lifetime">生命周期（Lifetime）<a class="headerlink" href="#lifetime" title="Permanent link">&para;</a></h3>
+<p>生命周期就像是你和朋友一起观看电影，但你必须确保电影结束前，你的朋友仍然在场。如果你的朋友提前离开，你不能再和他一起看电影。在 Rust 中，生命周期告诉编译器你的引用可以用多久，以确保引用不会指向已经消失的东西。这样可以防止出现问题。</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">        </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_value</span><span class="p">(</span><span class="o">&amp;</span><span class="n">number</span><span class="p">);</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="c1">// number 离开了作用域，但 result 的引用仍然有效</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Result: {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="p">}</span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="k">fn</span><span class="w"> </span><span class="nf">get_value</span><span class="o">&lt;&#39;</span><span class="na">a</span><span class="o">&gt;</span><span class="p">(</span><span class="n">val</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="na">a</span><span class="w"> </span><span class="kt">i32</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="kp">&amp;</span><span class="o">&#39;</span><span class="na">a</span><span class="w"> </span><span class="kt">i32</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="w">    </span><span class="c1">// 接受 i32 的引用，返回相同生命周期的引用</span>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="c1">// 返回 val 的引用，其生命周期与 val 相同</span>
+</span><span id="__span-29-14"><a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>在这个示例中，我们创建了一个整数 <code>number</code>，然后将它的引用传递给 <code>get_value</code> 函数，并使用生命周期 <code>'a</code> 来标注引用的有效性。函数返回的引用的生命周期与传入的引用 <code>val</code> 相同，因此它仍然有效，即使 <code>number</code> 离开了作用域。</p>
+<p>这些案例希望帮助你更容易理解 Rust 中的所有权、借用和生命周期这三个概念。这些概念是 Rust 的核心，有助于确保你的代码既安全又高效。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="上一页: Cookbook for Rustaceans in Finance / Rust量化金融开发指南">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                Cookbook for Rustaceans in Finance / Rust量化金融开发指南
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Chapter%2002%20-%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA/" class="md-footer__link md-footer__link--next" aria-label="下一页: Chapter 02 - 格式化输出">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                Chapter 02 - 格式化输出
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.footer", "navigation.indexes", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>

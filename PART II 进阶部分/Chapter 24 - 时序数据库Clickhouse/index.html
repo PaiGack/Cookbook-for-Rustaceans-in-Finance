@@ -1,0 +1,2666 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../Chapter%2023%20%E7%94%A8Polars%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8A%A0%E9%80%9F%E6%95%B0%E6%8D%AE%E6%A1%86%E6%9E%B6%E5%A4%84%E7%90%86/">
+      
+      
+        <link rel="next" href="../Chapter%2025%20-%20Unsafe/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>Chapter 24 - 时序数据库Clickhouse - Rust量化金融开发指南</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-24-clickhouse" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../.." title="Rust量化金融开发指南" class="md-header__button md-logo" aria-label="Rust量化金融开发指南" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Rust量化金融开发指南
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 24 - 时序数据库Clickhouse
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5M7 15a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/arthur19q3/Cookbook-for-Rustaceans-in-Finance" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    arthur19q3/Cookbook-for-Rustaceans-in-Finance
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Cookbook for Rustaceans in Finance / Rust量化金融开发指南
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2001%20-%20Rust%20%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  PART I 基础部分
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../Chapter%2023%20%E7%94%A8Polars%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8A%A0%E9%80%9F%E6%95%B0%E6%8D%AE%E6%A1%86%E6%9E%B6%E5%A4%84%E7%90%86/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  PART II 进阶部分
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Rust量化金融开发指南" class="md-nav__button md-logo" aria-label="Rust量化金融开发指南" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Rust量化金融开发指南
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/arthur19q3/Cookbook-for-Rustaceans-in-Finance" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    arthur19q3/Cookbook-for-Rustaceans-in-Finance
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Cookbook for Rustaceans in Finance / Rust量化金融开发指南
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    PART I 基础部分
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            PART I 基础部分
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2001%20-%20Rust%20%E8%AF%AD%E8%A8%80%E5%85%A5%E9%97%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 01 - Rust 语言入门
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2002%20-%20%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 02 - 格式化输出
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2003%20-%20%E5%8E%9F%E7%94%9F%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 03 - 原生类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2004%20-%20%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 04 - 自定义类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2005%20-%20%E6%A0%87%E5%87%86%E5%BA%93%E7%B1%BB%E5%9E%8B/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 05 - 标准库类型
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2006%20-%20%E5%8F%98%E9%87%8F%E5%92%8C%E4%BD%9C%E7%94%A8%E5%9F%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 06   变量和作用域
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2007%20-%20%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 7 - 类型系统
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2008%20-%20%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 8 - 类型转换
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2009%20-%20%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 9 - 流程控制
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2010%20-%20%E5%87%BD%E6%95%B0%2C%20%E6%96%B9%E6%B3%95%20%E5%92%8C%20%E9%97%AD%E5%8C%85/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 10 - 函数, 方法 和 闭包
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2011%20-%20%E6%A8%A1%E5%9D%97/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 11 - 模块
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2012%20-%20Cargo%20%E7%9A%84%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 12 - Cargo 的进阶使用
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2013%20-%20%E5%B1%9E%E6%80%A7%28Attributes%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 13 - 属性(Attributes)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2014%20-%20%E6%B3%9B%E5%9E%8B%E8%BF%9B%E9%98%B6%28Advanced%20Generic%20Type%20Usage%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 14 - 泛型进阶(Advanced Generic Type Usage)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2015%20-%20%E4%BD%9C%E7%94%A8%E5%9F%9F%E8%A7%84%E5%88%99%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 15 - 作用域规则和生命周期
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2016%20-%20%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E8%BF%9B%E9%98%B6%28Advanced%20Error%20handling%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 16 - 错误处理进阶(Advanced Error handling)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2017%20-%20%E7%89%B9%E6%80%A7%20%28trait%29%20%E8%AF%A6%E8%A7%A3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 17 - 特性 (trait) 详解
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2018%20-%20%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AE%8F/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 18 - 创建自定义宏
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2019%20-%20%E6%97%B6%E9%97%B4%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 19 - 时间处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2020%20-%20Redis%E3%80%81%E7%88%AC%E8%99%AB%E3%80%81%E4%BA%A4%E6%98%93%E6%97%A5%E5%BA%93/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 20 - Redis、爬虫、交易日库
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2021%20-%20%E7%BA%BF%E7%A8%8B%E5%92%8C%E7%AE%A1%E9%81%93/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 21 - 线程和管道
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../PART%20I%20%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86/Chapter%2022%20-%20%20%E6%96%87%E4%BB%B6%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 22 - 文件处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    PART II 进阶部分
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            PART II 进阶部分
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2023%20%E7%94%A8Polars%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8A%A0%E9%80%9F%E6%95%B0%E6%8D%AE%E6%A1%86%E6%9E%B6%E5%A4%84%E7%90%86/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 23 用Polars实现并加速数据框架处理
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Chapter 24 - 时序数据库Clickhouse
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 24 - 时序数据库Clickhouse
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#241-clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.1 安装和配置ClickHouse数据库
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2411" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.1.1 安装
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.1.1 安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntuclickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      在Ubuntu上安装ClickHouse：
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manjaro-arch-linuxclickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      在Manjaro / Arch Linux上安装ClickHouse：
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2412-clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.1.2 配置clickhouse的密码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#242-clickhouse-for-rust-clickhousers" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.2 ClickHouse for Rust: clickhouse.rs库
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.2 ClickHouse for Rust: clickhouse.rs库">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      主要特点
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      基本用法
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      错误处理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      高级用法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#243-clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.3 备份 ClickHouse 数据库的教程
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.3 备份 ClickHouse 数据库的教程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置备份目的地
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      备份整个数据库
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      恢复整个数据库
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      备份表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      恢复表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      增量备份
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用密码保护备份
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      压缩设置
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      恢复特定分区
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#244-clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4 关于Clickhouse的优化
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.4 关于Clickhouse的优化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      硬件优化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置优化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      查询优化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据模型优化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      实践案例
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      监控和维护
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="监控和维护">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2441" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.1. 硬件配置
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2442" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.2. 创建分区表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2443" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.3. 使用物化视图
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2444" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.4. 并行查询
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2445" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.5. 压缩算法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-rustclickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例1 通过Rust脚本在Clickhouse数据库中建表、删表、查询
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="案例1 通过Rust脚本在Clickhouse数据库中建表、删表、查询">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      准备工作
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      创建 ClickHouse 客户端
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      创建表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      删除表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      查询数据
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      示例用法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例2 创建布林带表的 SQL 脚本示例
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      脚本解析
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2025%20-%20Unsafe/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 25 - Unsafe
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2026%20-%20%E6%96%87%E6%A1%A3%E5%92%8C%E6%B5%8B%E8%AF%95/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 26 - 文档和测试
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chapter%2027%20%E5%B8%B8%E8%A7%81%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 27 常见技术指标及其实现
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#241-clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.1 安装和配置ClickHouse数据库
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2411" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.1.1 安装
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.1.1 安装">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntuclickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      在Ubuntu上安装ClickHouse：
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manjaro-arch-linuxclickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      在Manjaro / Arch Linux上安装ClickHouse：
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2412-clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.1.2 配置clickhouse的密码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#242-clickhouse-for-rust-clickhousers" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.2 ClickHouse for Rust: clickhouse.rs库
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.2 ClickHouse for Rust: clickhouse.rs库">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      主要特点
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      安装
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      基本用法
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      错误处理
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      高级用法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#243-clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.3 备份 ClickHouse 数据库的教程
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.3 备份 ClickHouse 数据库的教程">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置备份目的地
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      备份整个数据库
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      恢复整个数据库
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      备份表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      恢复表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      增量备份
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用密码保护备份
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      压缩设置
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      恢复特定分区
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#244-clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4 关于Clickhouse的优化
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.4 关于Clickhouse的优化">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      硬件优化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置优化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      查询优化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据模型优化
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      实践案例
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      监控和维护
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="监控和维护">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2441" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.1. 硬件配置
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2442" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.2. 创建分区表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2443" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.3. 使用物化视图
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2444" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.4. 并行查询
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2445" class="md-nav__link">
+    <span class="md-ellipsis">
+      24.4.5. 压缩算法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-rustclickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例1 通过Rust脚本在Clickhouse数据库中建表、删表、查询
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="案例1 通过Rust脚本在Clickhouse数据库中建表、删表、查询">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      准备工作
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clickhouse" class="md-nav__link">
+    <span class="md-ellipsis">
+      创建 ClickHouse 客户端
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      创建表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      删除表
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      查询数据
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      示例用法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-sql" class="md-nav__link">
+    <span class="md-ellipsis">
+      案例2 创建布林带表的 SQL 脚本示例
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      脚本解析
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="chapter-24-clickhouse">Chapter 24 - 时序数据库Clickhouse<a class="headerlink" href="#chapter-24-clickhouse" title="Permanent link">&para;</a></h1>
+<p>ClickHouse 是一个开源的列式时序数据库管理系统（DBMS），专为高性能和低延迟的数据分析而设计。它最初由俄罗斯的互联网公司 Yandex 开发，用于处理海量的数据分析工作负载。以下是 ClickHouse 的主要特点和介绍：</p>
+<ol>
+<li>
+<p><strong>列式存储</strong>：ClickHouse 采用列式存储，这意味着它将数据按列存储在磁盘上，而不是按行存储。这种存储方式对于数据分析非常高效，因为它允许查询只读取所需的列，而不必读取整个行。这导致了更快的查询性能和更小的存储空间占用。</p>
+</li>
+<li>
+<p><strong>分布式架构</strong>：ClickHouse 具有分布式架构，可以轻松扩展以处理大规模数据集。它支持数据分片、分布式复制和负载均衡，以确保高可用性和容错性。</p>
+</li>
+<li>
+<p><strong>支持 SQL 查询</strong>：ClickHouse 支持标准的 SQL 查询语言，使用户可以使用熟悉的查询语法执行数据分析操作。它还支持复杂的查询，如聚合、窗口函数和子查询。</p>
+</li>
+<li>
+<p><strong>高性能</strong>：ClickHouse 以查询性能和吞吐量为重点进行了优化。它专为快速的数据分析查询而设计，可以在毫秒级别内处理数十亿行的数据。</p>
+</li>
+<li>
+<p><strong>实时数据注入</strong>：ClickHouse 支持实时数据注入，允许将新数据迅速插入到表中，并能够在不停机的情况下进行数据更新。</p>
+</li>
+<li>
+<p><strong>支持多种数据格式</strong>：ClickHouse 可以处理多种数据格式，包括 JSON、CSV、Parquet 等，使其能够与各种数据源无缝集成。</p>
+</li>
+<li>
+<p><strong>可扩展性</strong>：ClickHouse 具有可扩展性，可以与其他工具和框架（如 Apache Kafka、Spark、Presto）集成，以满足各种数据处理需求。</p>
+</li>
+<li>
+<p><strong>开源和活跃的社区</strong>：ClickHouse 是一个开源项目，拥有活跃的社区支持。这意味着你可以免费获取并使用它，并且有一个庞大的开发者社区，提供了大量的文档和资源。</p>
+</li>
+</ol>
+<p>ClickHouse 在大数据分析、日志处理、事件追踪、时序数据分析等场景中得到了广泛的应用。它的高性能、可扩展性和强大的查询功能使其成为处理大规模数据的理想选择。如果你需要处理大量时序数据并进行快速数据分析，那么 ClickHouse 可能是一个非常有价值的数据库管理系统。</p>
+<h3 id="241-clickhouse">24.1 安装和配置ClickHouse数据库<a class="headerlink" href="#241-clickhouse" title="Permanent link">&para;</a></h3>
+<h3 id="2411">24.1.1 安装<a class="headerlink" href="#2411" title="Permanent link">&para;</a></h3>
+<h4 id="ubuntuclickhouse">在Ubuntu上安装ClickHouse：<a class="headerlink" href="#ubuntuclickhouse" title="Permanent link">&para;</a></h4>
+<ol>
+<li>打开终端并更新包列表：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo apt update
+</span></code></pre></div>
+<ol>
+<li>安装ClickHouse的APT存储库：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sudo apt install apt-transport-https ca-certificates dirmngr
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E0C56BD4
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>echo &quot;deb https://repo.clickhouse.tech/deb/stable/ main/&quot; | sudo tee /etc/apt/sources.list.d/clickhouse.list
+</span></code></pre></div>
+<ol>
+<li>再次更新包列表以获取ClickHouse包：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sudo apt update
+</span></code></pre></div>
+<ol>
+<li>安装ClickHouse Server：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>sudo apt install clickhouse-server
+</span></code></pre></div>
+<ol>
+<li>启动ClickHouse服务：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sudo service clickhouse-server start
+</span></code></pre></div>
+<ol>
+<li>我们可以使用以下命令检查ClickHouse服务器的状态：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>sudo service clickhouse-server status
+</span></code></pre></div>
+<h4 id="manjaro-arch-linuxclickhouse">在Manjaro / Arch Linux上安装ClickHouse：<a class="headerlink" href="#manjaro-arch-linuxclickhouse" title="Permanent link">&para;</a></h4>
+<ol>
+<li>打开终端并使用以下命令安装ClickHouse：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>sudo pacman -S clickhouse
+</span></code></pre></div>
+<ol>
+<li>启动ClickHouse服务：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>sudo systemctl start clickhouse-server
+</span></code></pre></div>
+<ol>
+<li>我们可以使用以下命令检查ClickHouse服务器的状态：</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sudo systemctl status clickhouse-server
+</span></code></pre></div>
+<p>这样ClickHouse就已经安装在你的Ubuntu或Arch Linux系统上了，并且服务已启动。</p>
+<p>此时如果我们如果访问本地host上的这个网址：<a href="http://localhost:8123">http://localhost:8123</a> ，会看到服务器返回了一个'Ok'给我们。</p>
+<h4 id="2412-clickhouse">24.1.2 配置clickhouse的密码<a class="headerlink" href="#2412-clickhouse" title="Permanent link">&para;</a></h4>
+<p>还是不要忘记，生产环境中安全是至关重要的，在ClickHouse中配置密码需要完成以下步骤：</p>
+<ol>
+<li><strong>创建用户和设置密码</strong>：
+   首先，我们需要登录到ClickHouse服务器上，并使用管理员权限创建用户并设置密码。我们可以使用ClickHouse客户端或者通过在配置文件中执行SQL来完成这一步骤。</li>
+</ol>
+<p>使用ClickHouse客户端：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">USER</span><span class="w"> </span><span class="s1">&#39;your_username&#39;</span><span class="w"> </span><span class="n">IDENTIFIED</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="s1">&#39;your_password&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p>请将 <code>'your_username'</code> 替换为我们要创建的用户名，将 <code>'your_password'</code> 替换为用户的密码。</p>
+<ol>
+<li><strong>分配权限</strong>：
+   创建用户后，需要分配相应的权限。通常，我们可以使用<code>GRANT</code>语句来为用户分配权限。以下是一个示例，将允许用户对特定表执行SELECT操作：</li>
+</ol>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">GRANT</span><span class="w"> </span><span class="k">SELECT</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">database_name</span><span class="p">.</span><span class="k">table_name</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="s1">&#39;your_username&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p>这将授予 <code>'your_username'</code> 用户对 <code>'database_name.table_name'</code> 表的SELECT权限。我们可以根据需要为用户分配不同的权限。</p>
+<ol>
+<li><strong>配置ClickHouse服务</strong>：
+   接下来，我们需要配置ClickHouse服务器以启用身份验证。在ClickHouse的配置文件中，找到并编辑<code>users.xml</code>文件。通常，该文件的位置是<code>/etc/clickhouse-server/users.xml</code>。在该文件中，我们可以为刚刚创建的用户添加相应的配置。</li>
+</ol>
+<div class="language-xml highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nt">&lt;yandex&gt;</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="nt">&lt;profiles&gt;</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">        </span><span class="cm">&lt;!-- 添加用户配置 --&gt;</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">        </span><span class="nt">&lt;your_username&gt;</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">            </span><span class="nt">&lt;password&gt;</span>your_password<span class="nt">&lt;/password&gt;</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">            </span><span class="nt">&lt;networks&gt;</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">                </span><span class="nt">&lt;ip&gt;</span>::/0<span class="nt">&lt;/ip&gt;</span><span class="w"> </span><span class="cm">&lt;!-- 允许所有IP连接 --&gt;</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">            </span><span class="nt">&lt;/networks&gt;</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">        </span><span class="nt">&lt;/your_username&gt;</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span><span class="nt">&lt;/profiles&gt;</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="nt">&lt;/yandex&gt;</span>
+</span></code></pre></div>
+<p>请注意，这只是一个示例配置，我们需要将 <code>'your_username'</code> 和 <code>'your_password'</code> 替换为实际的用户名和密码。此外，上述配置允许来自所有IP地址的连接，这可能不是最安全的配置。我们可以根据需要限制连接的IP地址范围。</p>
+<ol>
+<li><strong>重启ClickHouse服务</strong>：
+   最后，重新启动ClickHouse服务器以使配置更改生效：</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>restart<span class="w"> </span>clickhouse-server
+</span></code></pre></div>
+<p>这会重新加载配置文件并应用新的用户和权限设置。</p>
+<p>完成上述步骤后，我们的ClickHouse服务器将配置了用户名和密码的身份验证机制，并且只有具有正确凭据的用户才能访问相应的数据库和表。请确保密码强度足够，以增强安全性。</p>
+<h3 id="242-clickhouse-for-rust-clickhousers">24.2 ClickHouse for Rust: clickhouse.rs库<a class="headerlink" href="#242-clickhouse-for-rust-clickhousers" title="Permanent link">&para;</a></h3>
+<p><code>clickhouse.rs</code> 是一个网友 Paul Loyd 开发的比较成熟的第三方 Rust 库，旨在与 ClickHouse 数据库进行交互，提供了便捷的查询执行、数据处理和连接管理功能。以下是该库的一些主要特点：</p>
+<h4 id="_1">主要特点<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>异步支持</strong>：<code>clickhouse.rs</code> 利用了 Rust 的异步编程能力，非常适合需要非阻塞数据库操作的高性能应用程序。</li>
+<li><strong>类型化接口</strong>：该库提供了强类型接口，使数据库交互更加安全和可预测，减少运行时错误并提高代码的健壮性。</li>
+<li><strong>支持 ClickHouse 特性</strong>：库支持多种 ClickHouse 特性，包括批量插入、复杂查询和不同的数据类型。</li>
+<li><strong>连接池</strong>：<code>clickhouse.rs</code> 包含连接池功能，在高负载场景下实现高效的数据库连接管理。</li>
+<li><strong>易用性</strong>：该库设计简洁明了的 API，使各级 Rust 开发者都能轻松上手。</li>
+</ol>
+<h4 id="_2">安装<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h4>
+<p>要使用 <code>clickhouse.rs</code>，需要在 <code>Cargo.toml</code> 中添加依赖项：</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">[dependencies]</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">clickhouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;0.11&quot;</span><span class="w">  </span><span class="c1"># 请确保使用最新版本</span>
+</span></code></pre></div>
+<h4 id="_3">基本用法<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h4>
+<p>以下是使用 <code>clickhouse.rs</code> 连接 ClickHouse 数据库并执行查询的简单示例：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">use</span><span class="w"> </span><span class="n">clickhouse</span><span class="p">::{</span><span class="n">Client</span><span class="p">,</span><span class="w"> </span><span class="n">Row</span><span class="p">};</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">use</span><span class="w"> </span><span class="n">futures</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">StreamExt</span><span class="p">;</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">use</span><span class="w"> </span><span class="n">tokio</span><span class="p">;</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="cp">#[tokio::main]</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="c1">// 初始化客户端</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Client</span><span class="p">::</span><span class="n">default</span><span class="p">()</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">        </span><span class="p">.</span><span class="n">with_url</span><span class="p">(</span><span class="s">&quot;http://localhost:8123&quot;</span><span class="p">)</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">        </span><span class="p">.</span><span class="n">with_database</span><span class="p">(</span><span class="s">&quot;default&quot;</span><span class="p">);</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">    </span><span class="c1">// 执行查询示例</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">cursor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;SELECT number FROM system.numbers LIMIT 10&quot;</span><span class="p">).</span><span class="n">fetch</span><span class="p">().</span><span class="n">unwrap</span><span class="p">();</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cursor</span><span class="p">.</span><span class="n">next</span><span class="p">().</span><span class="k">await</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">number</span><span class="p">:</span><span class="w"> </span><span class="kt">u64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;number&quot;</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">number</span><span class="p">);</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_4">错误处理<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<p>该库使用标准的 Rust 错误处理机制，使得管理潜在问题变得简单。以下是处理查询执行错误的示例：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">use</span><span class="w"> </span><span class="n">clickhouse</span><span class="p">::{</span><span class="n">Client</span><span class="p">,</span><span class="w"> </span><span class="n">Error</span><span class="p">};</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">use</span><span class="w"> </span><span class="n">tokio</span><span class="p">;</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="cp">#[tokio::main]</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Client</span><span class="p">::</span><span class="n">default</span><span class="p">().</span><span class="n">with_url</span><span class="p">(</span><span class="s">&quot;http://localhost:8123&quot;</span><span class="p">);</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;SELECT number FROM system.numbers LIMIT 10&quot;</span><span class="p">)</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">        </span><span class="p">.</span><span class="n">fetch</span><span class="p">()</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">        </span><span class="p">.</span><span class="k">await</span><span class="p">;</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="k">mut</span><span class="w"> </span><span class="n">cursor</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">row</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cursor</span><span class="p">.</span><span class="n">next</span><span class="p">().</span><span class="k">await</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">                </span><span class="kd">let</span><span class="w"> </span><span class="n">number</span><span class="p">:</span><span class="w"> </span><span class="kt">u64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">row</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;number&quot;</span><span class="p">).</span><span class="n">unwrap</span><span class="p">();</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">                </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">number</span><span class="p">);</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="w">            </span><span class="p">}</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">        </span><span class="p">}</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="w">        </span><span class="nb">Err</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">eprintln!</span><span class="p">(</span><span class="s">&quot;查询执行错误: {:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">),</span>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>
+</span><span id="__span-15-22"><a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
+</span><span id="__span-15-23"><a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_5">高级用法<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p>对于批量插入或处理特定数据类型等复杂场景，请参阅库的文档和示例。该库支持多种 ClickHouse 特性，可以适应各种使用场景。</p>
+<h3 id="243-clickhouse">24.3 备份 ClickHouse 数据库的教程<a class="headerlink" href="#243-clickhouse" title="Permanent link">&para;</a></h3>
+<p>备份 ClickHouse 数据库对于数据安全和业务连续性至关重要。通过定期备份，可以在数据丢失、硬件故障或人为错误时快速恢复，确保数据完整性和可用性。此外，备份有助于在系统升级或迁移过程中保护数据，避免意外损失。备份还支持增量备份和压缩，优化存储空间和备份速度，为企业提供灵活、高效的数据管理解决方案。通过良好的备份策略，可以大大降低数据丢失风险，保障业务稳定运行。</p>
+<h4 id="_6">配置备份目的地<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<p>首先，在 <code>/etc/clickhouse-server/config.d/backup_disk.xml</code> 中添加备份目的地配置：</p>
+<div class="language-xml highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nt">&lt;clickhouse&gt;</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="nt">&lt;storage_configuration&gt;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">        </span><span class="nt">&lt;disks&gt;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">            </span><span class="nt">&lt;backups&gt;</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">                </span><span class="nt">&lt;type&gt;</span>local<span class="nt">&lt;/type&gt;</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">                </span><span class="nt">&lt;path&gt;</span>/backups/<span class="nt">&lt;/path&gt;</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">            </span><span class="nt">&lt;/backups&gt;</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">        </span><span class="nt">&lt;/disks&gt;</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">    </span><span class="nt">&lt;/storage_configuration&gt;</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">    </span><span class="nt">&lt;backups&gt;</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">        </span><span class="nt">&lt;allowed_disk&gt;</span>backups<span class="nt">&lt;/allowed_disk&gt;</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w">        </span><span class="nt">&lt;allowed_path&gt;</span>/backups/<span class="nt">&lt;/allowed_path&gt;</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">    </span><span class="nt">&lt;/backups&gt;</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="nt">&lt;/clickhouse&gt;</span>
+</span></code></pre></div>
+<h4 id="_7">备份整个数据库<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<p>执行以下命令将整个数据库备份到指定磁盘：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">BACKUP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">my_database</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;database_backup.zip&#39;</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="_8">恢复整个数据库<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<p>从备份文件中恢复整个数据库：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">RESTORE</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">my_database</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;database_backup.zip&#39;</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="_9">备份表<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<p>执行以下命令将表备份到指定磁盘：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">BACKUP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">my_database</span><span class="p">.</span><span class="n">my_table</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;table_backup.zip&#39;</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="_10">恢复表<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
+<p>从备份文件中恢复表：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">RESTORE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">my_database</span><span class="p">.</span><span class="n">my_table</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;table_backup.zip&#39;</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="_11">增量备份<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
+<p>指定基础备份进行增量备份：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">BACKUP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">my_database</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;incremental_backup.zip&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">SETTINGS</span><span class="w"> </span><span class="n">base_backup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;database_backup.zip&#39;</span><span class="p">);</span>
+</span></code></pre></div>
+<h4 id="_12">使用密码保护备份<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
+<p>备份文件使用密码保护：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">BACKUP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">my_database</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;protected_backup.zip&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">SETTINGS</span><span class="w"> </span><span class="n">password</span><span class="o">=</span><span class="s1">&#39;yourpassword&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="_13">压缩设置<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h4>
+<p>指定压缩方法和级别：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">BACKUP</span><span class="w"> </span><span class="k">DATABASE</span><span class="w"> </span><span class="n">my_database</span><span class="w"> </span><span class="k">TO</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;compressed_backup.zip&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">SETTINGS</span><span class="w"> </span><span class="n">compression_method</span><span class="o">=</span><span class="s1">&#39;lzma&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">compression_level</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span>
+</span></code></pre></div>
+<h4 id="_14">恢复特定分区<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h4>
+<p>从备份中恢复特定分区：</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="n">RESTORE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">my_database</span><span class="p">.</span><span class="n">my_table</span><span class="w"> </span><span class="n">PARTITIONS</span><span class="w"> </span><span class="s1">&#39;partition_id&#39;</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">Disk</span><span class="p">(</span><span class="s1">&#39;backups&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;table_backup.zip&#39;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>更多详细信息请参考 <a href="https://clickhouse.com/docs/en/operations/backup">ClickHouse 文档</a>。</p>
+<h3 id="244-clickhouse">24.4  关于Clickhouse的优化<a class="headerlink" href="#244-clickhouse" title="Permanent link">&para;</a></h3>
+<p>在量化金融领域，处理大量实时数据至关重要。ClickHouse作为一款高性能列式数据库，提供了高效的查询和存储方案。然而，为了充分发挥其性能，必须对其进行优化。</p>
+<h4 id="_15">硬件优化<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>存储设备</strong>：选择高性能 SSD，可以显著提高数据读取和写入速度。</li>
+<li><strong>内存</strong>：增加内存容量，有助于更快地处理大量数据。</li>
+<li><strong>网络</strong>：优化网络带宽和延迟，确保分布式集群间的数据传输效率。</li>
+</ol>
+<h4 id="_16">配置优化<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>设置合适的分区策略</strong>：根据时间或其他关键维度分区，提高查询性能。</li>
+<li><strong>合并设置</strong>：配置合适的 <code>merge_tree</code> 设置，优化数据合并过程，减少碎片。</li>
+<li><strong>缓存和内存设置</strong>：调整 <code>mark_cache_size</code> 和 <code>max_memory_usage</code> 等参数，提升缓存命中率和内存使用效率。</li>
+</ol>
+<h4 id="_17">查询优化<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>索引</strong>：利用主键和二级索引，加速查询。</li>
+<li><strong>并行查询</strong>：启用 <code>max_threads</code> 参数，充分利用多核 CPU 并行处理查询。</li>
+<li><strong>物化视图</strong>：预计算常用查询结果，减少实时计算开销。</li>
+</ol>
+<h4 id="_18">数据模型优化<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>列存储设计</strong>：尽量将频繁查询的列存储在一起，减少 I/O 开销。</li>
+<li><strong>压缩算法</strong>：选择合适的压缩算法，如 <code>LZ4</code> 或 <code>ZSTD</code>，在压缩率和性能之间取得平衡。</li>
+</ol>
+<h4 id="_19">实践案例<a class="headerlink" href="#_19" title="Permanent link">&para;</a></h4>
+<p>以量化金融中的市场数据分析为例，优化 ClickHouse 的关键步骤如下：</p>
+<ol>
+<li><strong>分区策略</strong>：按日期分区，使查询特定时间段数据时更高效。</li>
+<li><strong>物化视图</strong>：预计算每日交易量、价格波动等关键指标，减少实时计算负担。</li>
+<li><strong>并行查询</strong>：调整 <code>max_threads</code>，确保查询时充分利用服务器多核资源。</li>
+</ol>
+<h4 id="_20">监控和维护<a class="headerlink" href="#_20" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>监控工具</strong>：使用 ClickHouse 提供的 <code>system</code> 表监控系统性能和查询效率。</li>
+<li><strong>定期维护</strong>：定期检查并优化分区和索引，防止性能下降。</li>
+</ol>
+<p>通过合理的硬件配置、优化查询和数据模型设计，以及持续的监控和维护，ClickHouse 可以在量化金融领域中提供卓越的性能和可靠性，支持高频交易、实时数据分析等应用场景。以下我将介绍一些优化实例：</p>
+<h5 id="2441">24.4.1. 硬件配置<a class="headerlink" href="#2441" title="Permanent link">&para;</a></h5>
+<div class="language-xml highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nt">&lt;clickhouse&gt;</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w">    </span><span class="nt">&lt;storage_configuration&gt;</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w">        </span><span class="nt">&lt;disks&gt;</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">            </span><span class="nt">&lt;default&gt;</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">                </span><span class="nt">&lt;path&gt;</span>/var/lib/clickhouse/<span class="nt">&lt;/path&gt;</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w">            </span><span class="nt">&lt;/default&gt;</span>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">            </span><span class="nt">&lt;ssd&gt;</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">                </span><span class="nt">&lt;type&gt;</span>local<span class="nt">&lt;/type&gt;</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">                </span><span class="nt">&lt;path&gt;</span>/mnt/ssd/<span class="nt">&lt;/path&gt;</span>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="w">            </span><span class="nt">&lt;/ssd&gt;</span>
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="w">        </span><span class="nt">&lt;/disks&gt;</span>
+</span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="w">    </span><span class="nt">&lt;/storage_configuration&gt;</span>
+</span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="nt">&lt;/clickhouse&gt;</span>
+</span></code></pre></div>
+<h5 id="2442">24.4.2. 创建分区表<a class="headerlink" href="#2442" title="Permanent link">&para;</a></h5>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">market_data</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="w">    </span><span class="nb">date</span><span class="w"> </span><span class="nb">Date</span><span class="p">,</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="w">    </span><span class="n">symbol</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">    </span><span class="n">price</span><span class="w"> </span><span class="n">Float64</span><span class="p">,</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">    </span><span class="n">volume</span><span class="w"> </span><span class="n">UInt64</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MergeTree</span><span class="p">()</span>
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">toYYYYMM</span><span class="p">(</span><span class="nb">date</span><span class="p">)</span>
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span><span class="w"> </span><span class="nb">date</span><span class="p">);</span>
+</span></code></pre></div>
+<h5 id="2443">24.4.3. 使用物化视图<a class="headerlink" href="#2443" title="Permanent link">&para;</a></h5>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">market_summary</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="n">ENGINE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AggregatingMergeTree</span><span class="p">()</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">toYYYYMM</span><span class="p">(</span><span class="nb">date</span><span class="p">)</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span><span class="w"> </span><span class="nb">date</span><span class="p">)</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="k">AS</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="k">SELECT</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">    </span><span class="n">symbol</span><span class="p">,</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">    </span><span class="n">toYYYYMM</span><span class="p">(</span><span class="nb">date</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">month</span><span class="p">,</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">    </span><span class="k">avg</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">avg_price</span><span class="p">,</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">    </span><span class="k">sum</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_volume</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="k">FROM</span><span class="w"> </span><span class="n">market_data</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">symbol</span><span class="p">,</span><span class="w"> </span><span class="k">month</span><span class="p">;</span>
+</span></code></pre></div>
+<h5 id="2444">24.4.4. 并行查询<a class="headerlink" href="#2444" title="Permanent link">&para;</a></h5>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="k">SET</span><span class="w"> </span><span class="n">max_threads</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">;</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="k">SELECT</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">    </span><span class="n">symbol</span><span class="p">,</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">    </span><span class="k">avg</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">avg_price</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="k">FROM</span><span class="w"> </span><span class="n">market_data</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="k">WHERE</span><span class="w"> </span><span class="nb">date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="s1">&#39;2023-01-01&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="nb">date</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="s1">&#39;2023-12-31&#39;</span>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">symbol</span><span class="p">;</span>
+</span></code></pre></div>
+<h5 id="2445">24.4.5. 压缩算法<a class="headerlink" href="#2445" title="Permanent link">&para;</a></h5>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">compressed_data</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="w">    </span><span class="nb">date</span><span class="w"> </span><span class="nb">Date</span><span class="p">,</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">    </span><span class="n">symbol</span><span class="w"> </span><span class="n">String</span><span class="p">,</span>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">    </span><span class="n">price</span><span class="w"> </span><span class="n">Float64</span><span class="p">,</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">    </span><span class="n">volume</span><span class="w"> </span><span class="n">UInt64</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MergeTree</span><span class="p">()</span>
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">toYYYYMM</span><span class="p">(</span><span class="nb">date</span><span class="p">)</span>
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span><span class="w"> </span><span class="nb">date</span><span class="p">)</span>
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="n">SETTINGS</span><span class="w"> </span><span class="n">index_granularity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8192</span><span class="p">,</span>
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="w">    </span><span class="n">compress_on_write</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a><span class="w">    </span><span class="n">compression</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;lz4&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p>通过合理的硬件配置、优化查询和数据模型设计，以及持续的监控和维护，ClickHouse 可以在量化金融领域中提供卓越的性能和可靠性，支持高频交易、实时数据分析等应用场景。</p>
+<h3 id="1-rustclickhouse">案例1 通过Rust脚本在Clickhouse数据库中建表、删表、查询<a class="headerlink" href="#1-rustclickhouse" title="Permanent link">&para;</a></h3>
+<p>在量化金融领域中，使用 Rust 脚本管理 ClickHouse 数据库可以实现高效的数据处理和管理。以下是一个基本案例 。</p>
+<h4 id="_21">准备工作<a class="headerlink" href="#_21" title="Permanent link">&para;</a></h4>
+<p>首先，确保在你的 <code>Cargo.toml</code> 中添加 <code>clickhouse</code> 依赖：</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="k">[dependencies]</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="n">clickhouse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">default-features</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"> </span><span class="n">version</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;0.11.6&quot;</span><span class="w"> </span><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="clickhouse">创建 ClickHouse 客户端<a class="headerlink" href="#clickhouse" title="Permanent link">&para;</a></h4>
+<p>定义并初始化一个 ClickHouse 客户端：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="k">use</span><span class="w"> </span><span class="n">clickhouse</span><span class="p">::{</span><span class="n">Client</span><span class="p">,</span><span class="w"> </span><span class="n">Row</span><span class="p">};</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="k">use</span><span class="w"> </span><span class="n">lazy_static</span><span class="p">::</span><span class="n">lazy_static</span><span class="p">;</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="n">lazy_static</span><span class="o">!</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">ref</span><span class="w"> </span><span class="n">CLICKHOUSE_CLIENT</span><span class="p">:</span><span class="w"> </span><span class="nc">ClickHouseClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ClickHouseClient</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="p">}</span>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>
+</span><span id="__span-31-8"><a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ClickHouseClient</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-31-9"><a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">client</span><span class="p">:</span><span class="w"> </span><span class="nc">Client</span><span class="p">,</span>
+</span><span id="__span-31-10"><a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a><span class="p">}</span>
+</span><span id="__span-31-11"><a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>
+</span><span id="__span-31-12"><a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a><span class="k">impl</span><span class="w"> </span><span class="n">ClickHouseClient</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-31-13"><a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">new</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nc">Self</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-31-14"><a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Client</span><span class="p">::</span><span class="n">default</span><span class="p">().</span><span class="n">with_url</span><span class="p">(</span><span class="s">&quot;http://localhost:8123&quot;</span><span class="p">).</span><span class="n">with_database</span><span class="p">(</span><span class="s">&quot;default&quot;</span><span class="p">);</span>
+</span><span id="__span-31-15"><a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a><span class="w">        </span><span class="n">ClickHouseClient</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-31-16"><a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-31-17"><a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_22">创建表<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h4>
+<p>创建一个新的表 <code>market_data</code>：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">impl</span><span class="w"> </span><span class="n">ClickHouseClient</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">create_table</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">clickhouse</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">r#&quot;</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="s">            CREATE TABLE market_data (</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="s">                date Date,</span>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="s">                symbol String,</span>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="s">                price Float64,</span>
+</span><span id="__span-32-8"><a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="s">                volume UInt64</span>
+</span><span id="__span-32-9"><a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a><span class="s">            ) ENGINE = MergeTree()</span>
+</span><span id="__span-32-10"><a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a><span class="s">            PARTITION BY date</span>
+</span><span id="__span-32-11"><a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a><span class="s">            ORDER BY (symbol, date)</span>
+</span><span id="__span-32-12"><a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a><span class="s">        &quot;#</span><span class="p">;</span>
+</span><span id="__span-32-13"><a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a>
+</span><span id="__span-32-14"><a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a><span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">client</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">).</span><span class="n">execute</span><span class="p">().</span><span class="k">await</span>
+</span><span id="__span-32-15"><a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-32-16"><a id="__codelineno-32-16" name="__codelineno-32-16" href="#__codelineno-32-16"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_23">删除表<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h4>
+<p>删除一个已存在的表：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="k">impl</span><span class="w"> </span><span class="n">ClickHouseClient</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">drop_table</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">table_name</span><span class="p">:</span><span class="w"> </span><span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">clickhouse</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="fm">format!</span><span class="p">(</span><span class="s">&quot;DROP TABLE IF EXISTS {}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">table_name</span><span class="p">);</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">client</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="o">&amp;</span><span class="n">query</span><span class="p">).</span><span class="n">execute</span><span class="p">().</span><span class="k">await</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_24">查询数据<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h4>
+<p>从表中查询数据：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="cp">#[derive(Debug, Serialize, Deserialize, Row)]</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="k">pub</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">MarketData</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">date</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">symbol</span><span class="p">:</span><span class="w"> </span><span class="nb">String</span><span class="p">,</span>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">price</span><span class="p">:</span><span class="w"> </span><span class="kt">f64</span><span class="p">,</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="n">volume</span><span class="p">:</span><span class="w"> </span><span class="kt">u64</span><span class="p">,</span>
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="p">}</span>
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="k">impl</span><span class="w"> </span><span class="n">ClickHouseClient</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">query_data</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="nb">Vec</span><span class="o">&lt;</span><span class="n">MarketData</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">clickhouse</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-34-11"><a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SELECT * FROM market_data LIMIT 10&quot;</span><span class="p">;</span>
+</span><span id="__span-34-12"><a id="__codelineno-34-12" name="__codelineno-34-12" href="#__codelineno-34-12"></a><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">client</span><span class="p">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">).</span><span class="n">fetch_all</span><span class="p">::</span><span class="o">&lt;</span><span class="n">MarketData</span><span class="o">&gt;</span><span class="p">().</span><span class="k">await</span><span class="o">?</span><span class="p">;</span>
+</span><span id="__span-34-13"><a id="__codelineno-34-13" name="__codelineno-34-13" href="#__codelineno-34-13"></a><span class="w">        </span><span class="nb">Ok</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span><span id="__span-34-14"><a id="__codelineno-34-14" name="__codelineno-34-14" href="#__codelineno-34-14"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-34-15"><a id="__codelineno-34-15" name="__codelineno-34-15" href="#__codelineno-34-15"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="_25">示例用法<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h4>
+<p>完整的示例代码展示了如何使用这些功能：</p>
+<div class="language-rust highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="cp">#[tokio::main]</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="k">async</span><span class="w"> </span><span class="k">fn</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">-&gt;</span><span class="w"> </span><span class="nb">Result</span><span class="o">&lt;</span><span class="p">(),</span><span class="w"> </span><span class="n">clickhouse</span><span class="p">::</span><span class="n">error</span><span class="p">::</span><span class="n">Error</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ClickHouseClient</span><span class="p">::</span><span class="n">new</span><span class="p">();</span>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="w">    </span><span class="c1">// 创建表</span>
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="w">    </span><span class="n">client</span><span class="p">.</span><span class="n">create_table</span><span class="p">().</span><span class="k">await</span><span class="o">?</span><span class="p">;</span>
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Table created successfully.&quot;</span><span class="p">);</span>
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="w">    </span><span class="c1">// 查询数据</span>
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">query_data</span><span class="p">().</span><span class="k">await</span><span class="o">?</span><span class="p">;</span>
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;{:?}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">row</span><span class="p">);</span>
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>
+</span><span id="__span-35-15"><a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a><span class="w">    </span><span class="c1">// 删除表</span>
+</span><span id="__span-35-16"><a id="__codelineno-35-16" name="__codelineno-35-16" href="#__codelineno-35-16"></a><span class="w">    </span><span class="n">client</span><span class="p">.</span><span class="n">drop_table</span><span class="p">(</span><span class="s">&quot;market_data&quot;</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="p">;</span>
+</span><span id="__span-35-17"><a id="__codelineno-35-17" name="__codelineno-35-17" href="#__codelineno-35-17"></a><span class="w">    </span><span class="fm">println!</span><span class="p">(</span><span class="s">&quot;Table dropped successfully.&quot;</span><span class="p">);</span>
+</span><span id="__span-35-18"><a id="__codelineno-35-18" name="__codelineno-35-18" href="#__codelineno-35-18"></a>
+</span><span id="__span-35-19"><a id="__codelineno-35-19" name="__codelineno-35-19" href="#__codelineno-35-19"></a><span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span>
+</span><span id="__span-35-20"><a id="__codelineno-35-20" name="__codelineno-35-20" href="#__codelineno-35-20"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>通过这个基本教程，你可以在 Rust 脚本中实现对 ClickHouse 数据库的基本管理操作。这些示例代码可以根据具体需求进行扩展和优化，以满足量化金融领域的复杂数据处理需求。</p>
+<h3 id="2-sql">案例2 创建布林带表的 SQL 脚本示例<a class="headerlink" href="#2-sql" title="Permanent link">&para;</a></h3>
+<p>本案例展示如何利用 Rust 脚本与 ClickHouse 交互，计算布林带 (Bollinger Bands) 和其他技术指标，帮助金融分析师和量化交易员优化他们的交易策略。</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="c1">-- 创建名为 AG2305_TEST 的表，使用 MergeTree 引擎</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">AG2305_TEST</span>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a><span class="w">    </span><span class="n">ENGINE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MergeTree</span><span class="p">()</span>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="w">        </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="p">(</span><span class="k">minute</span><span class="p">,</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="p">)</span><span class="w"> </span><span class="c1">-- 按 minute 和 mean_lastprice 排序</span>
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="k">AS</span>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="c1">-- 从子查询中选择字段</span>
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="k">SELECT</span><span class="w"> </span><span class="n">outer_query</span><span class="p">.</span><span class="k">minute</span><span class="p">,</span>
+</span><span id="__span-36-8"><a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="n">outer_query</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="p">,</span><span class="w"> </span><span class="c1">-- 将 mean_lastprice 转换为 Float32 类型</span>
+</span><span id="__span-36-9"><a id="__codelineno-36-9" name="__codelineno-36-9" href="#__codelineno-36-9"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="n">sma</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w">                        </span><span class="k">AS</span><span class="w"> </span><span class="n">sma</span><span class="p">,</span><span class="w">           </span><span class="c1">-- 将 sma 转换为 Float32 类型</span>
+</span><span id="__span-36-10"><a id="__codelineno-36-10" name="__codelineno-36-10" href="#__codelineno-36-10"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="n">stddev</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w">                     </span><span class="k">AS</span><span class="w"> </span><span class="n">stddev</span><span class="p">,</span><span class="w">        </span><span class="c1">-- 将 stddev 转换为 Float32 类型</span>
+</span><span id="__span-36-11"><a id="__codelineno-36-11" name="__codelineno-36-11" href="#__codelineno-36-11"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="k">upper</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w">                      </span><span class="k">AS</span><span class="w"> </span><span class="k">upper</span><span class="p">,</span><span class="w">         </span><span class="c1">-- 将 upper 转换为 Float32 类型</span>
+</span><span id="__span-36-12"><a id="__codelineno-36-12" name="__codelineno-36-12" href="#__codelineno-36-12"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="k">lower</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w">                      </span><span class="k">AS</span><span class="w"> </span><span class="k">lower</span><span class="p">,</span><span class="w">         </span><span class="c1">-- 将 lower 转换为 Float32 类型</span>
+</span><span id="__span-36-13"><a id="__codelineno-36-13" name="__codelineno-36-13" href="#__codelineno-36-13"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="n">super_upper</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w">                </span><span class="k">AS</span><span class="w"> </span><span class="n">super_upper</span><span class="p">,</span><span class="w">   </span><span class="c1">-- 将 super_upper 转换为 Float32 类型</span>
+</span><span id="__span-36-14"><a id="__codelineno-36-14" name="__codelineno-36-14" href="#__codelineno-36-14"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="n">super_lower</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w">                </span><span class="k">AS</span><span class="w"> </span><span class="n">super_lower</span><span class="p">,</span><span class="w">   </span><span class="c1">-- 将 super_lower 转换为 Float32 类型</span>
+</span><span id="__span-36-15"><a id="__codelineno-36-15" name="__codelineno-36-15" href="#__codelineno-36-15"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="n">ssuper_upper</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w">               </span><span class="k">AS</span><span class="w"> </span><span class="n">ssuper_upper</span><span class="p">,</span><span class="w">  </span><span class="c1">-- 将 ssuper_upper 转换为 Float32 类型</span>
+</span><span id="__span-36-16"><a id="__codelineno-36-16" name="__codelineno-36-16" href="#__codelineno-36-16"></a><span class="w">       </span><span class="k">CAST</span><span class="p">(</span><span class="n">ssuper_lower</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">Float32</span><span class="p">)</span><span class="w">               </span><span class="k">AS</span><span class="w"> </span><span class="n">ssuper_lower</span><span class="p">,</span><span class="w">  </span><span class="c1">-- 将 ssuper_lower 转换为 Float32 类型</span>
+</span><span id="__span-36-17"><a id="__codelineno-36-17" name="__codelineno-36-17" href="#__codelineno-36-17"></a><span class="w">       </span><span class="k">CASE</span>
+</span><span id="__span-36-18"><a id="__codelineno-36-18" name="__codelineno-36-18" href="#__codelineno-36-18"></a><span class="w">           </span><span class="c1">-- 根据价格突破的不同情况赋值 bollinger_band_status</span>
+</span><span id="__span-36-19"><a id="__codelineno-36-19" name="__codelineno-36-19" href="#__codelineno-36-19"></a><span class="w">           </span><span class="k">WHEN</span><span class="w"> </span><span class="n">super_upper</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="k">upper</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1">-- 向上突破2个标准差</span>
+</span><span id="__span-36-20"><a id="__codelineno-36-20" name="__codelineno-36-20" href="#__codelineno-36-20"></a><span class="w">           </span><span class="k">WHEN</span><span class="w"> </span><span class="n">super_lower</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">lower</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="c1">-- 向下突破2个标准差</span>
+</span><span id="__span-36-21"><a id="__codelineno-36-21" name="__codelineno-36-21" href="#__codelineno-36-21"></a><span class="w">           </span><span class="k">WHEN</span><span class="w"> </span><span class="n">ssuper_upper</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">super_upper</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="c1">-- 向上突破4个标准差</span>
+</span><span id="__span-36-22"><a id="__codelineno-36-22" name="__codelineno-36-22" href="#__codelineno-36-22"></a><span class="w">           </span><span class="k">WHEN</span><span class="w"> </span><span class="n">ssuper_lower</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">super_lower</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="c1">-- 向下突破4个标准差</span>
+</span><span id="__span-36-23"><a id="__codelineno-36-23" name="__codelineno-36-23" href="#__codelineno-36-23"></a><span class="w">           </span><span class="k">WHEN</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">ssuper_upper</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="c1">-- 向上突破5个标准差</span>
+</span><span id="__span-36-24"><a id="__codelineno-36-24" name="__codelineno-36-24" href="#__codelineno-36-24"></a><span class="w">           </span><span class="k">WHEN</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ssuper_lower</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">upper</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">lower</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="c1">-- 向下突破5个标准差</span>
+</span><span id="__span-36-25"><a id="__codelineno-36-25" name="__codelineno-36-25" href="#__codelineno-36-25"></a><span class="w">           </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="c1">-- 在布林带内及其他情况</span>
+</span><span id="__span-36-26"><a id="__codelineno-36-26" name="__codelineno-36-26" href="#__codelineno-36-26"></a><span class="w">       </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">bollinger_band_status</span>
+</span><span id="__span-36-27"><a id="__codelineno-36-27" name="__codelineno-36-27" href="#__codelineno-36-27"></a><span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-36-28"><a id="__codelineno-36-28" name="__codelineno-36-28" href="#__codelineno-36-28"></a><span class="w">    </span><span class="c1">-- 从内层查询中选择字段</span>
+</span><span id="__span-36-29"><a id="__codelineno-36-29" name="__codelineno-36-29" href="#__codelineno-36-29"></a><span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="p">,</span>
+</span><span id="__span-36-30"><a id="__codelineno-36-30" name="__codelineno-36-30" href="#__codelineno-36-30"></a><span class="w">           </span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">,</span>
+</span><span id="__span-36-31"><a id="__codelineno-36-31" name="__codelineno-36-31" href="#__codelineno-36-31"></a><span class="w">           </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="p">,</span>
+</span><span id="__span-36-32"><a id="__codelineno-36-32" name="__codelineno-36-32" href="#__codelineno-36-32"></a><span class="w">           </span><span class="c1">-- 计算简单移动平均线 (SMA)</span>
+</span><span id="__span-36-33"><a id="__codelineno-36-33" name="__codelineno-36-33" href="#__codelineno-36-33"></a><span class="w">           </span><span class="k">avg</span><span class="p">(</span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">)</span>
+</span><span id="__span-36-34"><a id="__codelineno-36-34" name="__codelineno-36-34" href="#__codelineno-36-34"></a><span class="w">               </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="w"> </span><span class="k">ASC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">sma</span><span class="p">,</span>
+</span><span id="__span-36-35"><a id="__codelineno-36-35" name="__codelineno-36-35" href="#__codelineno-36-35"></a><span class="w">           </span><span class="c1">-- 计算标准差</span>
+</span><span id="__span-36-36"><a id="__codelineno-36-36" name="__codelineno-36-36" href="#__codelineno-36-36"></a><span class="w">           </span><span class="n">stddevPop</span><span class="p">(</span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">)</span>
+</span><span id="__span-36-37"><a id="__codelineno-36-37" name="__codelineno-36-37" href="#__codelineno-36-37"></a><span class="w">               </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="w"> </span><span class="k">ASC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">stddev</span><span class="p">,</span>
+</span><span id="__span-36-38"><a id="__codelineno-36-38" name="__codelineno-36-38" href="#__codelineno-36-38"></a><span class="w">           </span><span class="c1">-- 计算布林带上下轨</span>
+</span><span id="__span-36-39"><a id="__codelineno-36-39" name="__codelineno-36-39" href="#__codelineno-36-39"></a><span class="w">           </span><span class="n">sma</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">stddevPop</span><span class="p">(</span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">)</span>
+</span><span id="__span-36-40"><a id="__codelineno-36-40" name="__codelineno-36-40" href="#__codelineno-36-40"></a><span class="w">               </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="w"> </span><span class="k">ASC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">upper</span><span class="p">,</span>
+</span><span id="__span-36-41"><a id="__codelineno-36-41" name="__codelineno-36-41" href="#__codelineno-36-41"></a><span class="w">           </span><span class="n">sma</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">stddevPop</span><span class="p">(</span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">)</span>
+</span><span id="__span-36-42"><a id="__codelineno-36-42" name="__codelineno-36-42" href="#__codelineno-36-42"></a><span class="w">               </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="w"> </span><span class="k">ASC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">lower</span><span class="p">,</span>
+</span><span id="__span-36-43"><a id="__codelineno-36-43" name="__codelineno-36-43" href="#__codelineno-36-43"></a><span class="w">           </span><span class="c1">-- 计算更高和更低的布林带轨道</span>
+</span><span id="__span-36-44"><a id="__codelineno-36-44" name="__codelineno-36-44" href="#__codelineno-36-44"></a><span class="w">           </span><span class="n">sma</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">stddevPop</span><span class="p">(</span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">)</span>
+</span><span id="__span-36-45"><a id="__codelineno-36-45" name="__codelineno-36-45" href="#__codelineno-36-45"></a><span class="w">               </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="w"> </span><span class="k">ASC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">super_upper</span><span class="p">,</span>
+</span><span id="__span-36-46"><a id="__codelineno-36-46" name="__codelineno-36-46" href="#__codelineno-36-46"></a><span class="w">           </span><span class="n">sma</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">stddevPop</span><span class="p">(</span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">)</span>
+</span><span id="__span-36-47"><a id="__codelineno-36-47" name="__codelineno-36-47" href="#__codelineno-36-47"></a><span class="w">               </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="w"> </span><span class="k">ASC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">super_lower</span><span class="p">,</span>
+</span><span id="__span-36-48"><a id="__codelineno-36-48" name="__codelineno-36-48" href="#__codelineno-36-48"></a><span class="w">           </span><span class="n">sma</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">stddevPop</span><span class="p">(</span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">)</span>
+</span><span id="__span-36-49"><a id="__codelineno-36-49" name="__codelineno-36-49" href="#__codelineno-36-49"></a><span class="w">               </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="w"> </span><span class="k">ASC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ssuper_upper</span><span class="p">,</span>
+</span><span id="__span-36-50"><a id="__codelineno-36-50" name="__codelineno-36-50" href="#__codelineno-36-50"></a><span class="w">           </span><span class="n">sma</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">stddevPop</span><span class="p">(</span><span class="n">subquery</span><span class="p">.</span><span class="n">mean_lastprice</span><span class="p">)</span>
+</span><span id="__span-36-51"><a id="__codelineno-36-51" name="__codelineno-36-51" href="#__codelineno-36-51"></a><span class="w">               </span><span class="n">OVER</span><span class="w"> </span><span class="p">(</span><span class="n">PARTITION</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="n">start_time</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">subquery</span><span class="p">.</span><span class="k">minute</span><span class="w"> </span><span class="k">ASC</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">ssuper_lower</span>
+</span><span id="__span-36-52"><a id="__codelineno-36-52" name="__codelineno-36-52" href="#__codelineno-36-52"></a><span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-36-53"><a id="__codelineno-36-53" name="__codelineno-36-53" href="#__codelineno-36-53"></a><span class="w">        </span><span class="c1">-- 最内层查询，按分钟聚合数据并计算均价</span>
+</span><span id="__span-36-54"><a id="__codelineno-36-54" name="__codelineno-36-54" href="#__codelineno-36-54"></a><span class="w">        </span><span class="k">SELECT</span><span class="w"> </span><span class="n">toStartOfMinute</span><span class="p">(</span><span class="n">datetime</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">minute</span><span class="p">,</span>
+</span><span id="__span-36-55"><a id="__codelineno-36-55" name="__codelineno-36-55" href="#__codelineno-36-55"></a><span class="w">               </span><span class="k">AVG</span><span class="p">(</span><span class="n">lastprice</span><span class="p">)</span><span class="w">            </span><span class="k">AS</span><span class="w"> </span><span class="n">mean_lastprice</span><span class="p">,</span>
+</span><span id="__span-36-56"><a id="__codelineno-36-56" name="__codelineno-36-56" href="#__codelineno-36-56"></a><span class="w">               </span><span class="c1">-- 计算开始时间，根据 datetime 决定是当前日期的 21 点还是前一天的 21 点</span>
+</span><span id="__span-36-57"><a id="__codelineno-36-57" name="__codelineno-36-57" href="#__codelineno-36-57"></a><span class="w">               </span><span class="k">CASE</span>
+</span><span id="__span-36-58"><a id="__codelineno-36-58" name="__codelineno-36-58" href="#__codelineno-36-58"></a><span class="w">                   </span><span class="k">WHEN</span><span class="w"> </span><span class="n">toHour</span><span class="p">(</span><span class="n">datetime</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="n">toDate</span><span class="p">(</span><span class="n">datetime</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">DAY</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="n">HOUR</span>
+</span><span id="__span-36-59"><a id="__codelineno-36-59" name="__codelineno-36-59" href="#__codelineno-36-59"></a><span class="w">                   </span><span class="k">ELSE</span><span class="w"> </span><span class="n">toDate</span><span class="p">(</span><span class="n">datetime</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="mi">21</span><span class="w"> </span><span class="n">HOUR</span>
+</span><span id="__span-36-60"><a id="__codelineno-36-60" name="__codelineno-36-60" href="#__codelineno-36-60"></a><span class="w">               </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">start_time</span>
+</span><span id="__span-36-61"><a id="__codelineno-36-61" name="__codelineno-36-61" href="#__codelineno-36-61"></a><span class="w">        </span><span class="k">FROM</span><span class="w"> </span><span class="n">futures</span><span class="p">.</span><span class="n">AG2305</span>
+</span><span id="__span-36-62"><a id="__codelineno-36-62" name="__codelineno-36-62" href="#__codelineno-36-62"></a><span class="w">        </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="k">minute</span><span class="p">,</span><span class="w"> </span><span class="n">start_time</span>
+</span><span id="__span-36-63"><a id="__codelineno-36-63" name="__codelineno-36-63" href="#__codelineno-36-63"></a><span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="n">subquery</span>
+</span><span id="__span-36-64"><a id="__codelineno-36-64" name="__codelineno-36-64" href="#__codelineno-36-64"></a><span class="p">)</span><span class="w"> </span><span class="n">outer_query</span>
+</span><span id="__span-36-65"><a id="__codelineno-36-65" name="__codelineno-36-65" href="#__codelineno-36-65"></a><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">outer_query</span><span class="p">.</span><span class="k">minute</span><span class="p">;</span>
+</span></code></pre></div>
+<h3 id="_26">脚本解析<a class="headerlink" href="#_26" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>创建表</strong>：使用 MergeTree 引擎创建表 <code>AG2305_TEST</code>，并按 <code>minute</code> 和 <code>mean_lastprice</code> 排序。</li>
+<li><strong>选择字段</strong>：从内部查询中选择字段并进行类型转换。</li>
+<li><strong>布林带状态</strong>：根据价格与布林带上下轨的关系，确定 <code>bollinger_band_status</code> 的值。</li>
+<li><strong>内部查询</strong>：</li>
+<li><strong>子查询</strong>：聚合每分钟的平均价格 <code>mean_lastprice</code>，并计算开始时间 <code>start_time</code>。</li>
+<li><strong>布林带计算</strong>：计算简单移动平均线（SMA）和不同标准差倍数的上下轨。</li>
+</ol>
+<p>通过这个逐行注释的 SQL 脚本，可以更好地理解如何在 ClickHouse 中创建复杂的计算表，并应用于量化金融领域的数据处理。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="页脚" >
+        
+          
+          <a href="../Chapter%2023%20%E7%94%A8Polars%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8A%A0%E9%80%9F%E6%95%B0%E6%8D%AE%E6%A1%86%E6%9E%B6%E5%A4%84%E7%90%86/" class="md-footer__link md-footer__link--prev" aria-label="上一页: Chapter 23 用Polars实现并加速数据框架处理">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                上一页
+              </span>
+              <div class="md-ellipsis">
+                Chapter 23 用Polars实现并加速数据框架处理
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Chapter%2025%20-%20Unsafe/" class="md-footer__link md-footer__link--next" aria-label="下一页: Chapter 25 - Unsafe">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                下一页
+              </span>
+              <div class="md-ellipsis">
+                Chapter 25 - Unsafe
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tracking", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.footer", "navigation.indexes", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
